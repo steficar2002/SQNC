@@ -1,0 +1,10 @@
+{
+  "name": "kocka-prez",
+  "version": "1.0.0",
+  "description": "Presentation website — Sequence × Volcano Bet (mobile & desktop)",
+  "private": true,
+  "scripts": {
+    "start": "npx live-server --port=3000 --watch=.",
+    "preview": "npx serve . -l 3000"
+  }
+}

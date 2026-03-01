@@ -1,0 +1,2495 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sequence × Volcano Bet</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous">
+<style>
+  :root {
+    --red: #E8002D;
+    --red-dark: #9B001E;
+    --gold: #FFB800;
+    --green: #22c55e;
+    --black: #0A0A0A;
+    --dark: #111111;
+    --dark2: #1A1A1A;
+    --dark3: #242424;
+    --gray: #888;
+    --light: #F0EDE8;
+    --white: #FFFFFF;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--black);
+    color: var(--white);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Custom cursor – only on desktop (devices with fine pointer + hover) */
+  @media (hover: none) or (pointer: coarse) {
+    body { cursor: auto; }
+    .cursor, .cursor-ring { display: none !important; }
+  }
+  @media (hover: hover) and (pointer: fine) {
+    body { cursor: none; }
+  }
+
+  .cursor {
+    position: fixed;
+    width: 12px; height: 12px;
+    background: var(--red);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.1s;
+    transform: translate(-50%, -50%);
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 36px; height: 36px;
+    border: 1px solid rgba(232,0,45,0.4);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: all 0.15s ease;
+  }
+
+  /* Slide system */
+  .slides-wrapper {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    transform: scale(1.2);
+    transform-origin: center center;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.6s ease;
+    overflow: hidden;
+  }
+
+  .slide.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  /* Noise overlay */
+  .slide::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.4;
+  }
+
+  /* Volcano Bet logo – gornji desni ugao na svim slajdovima */
+  .volcano-logo {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 50;
+    pointer-events: none;
+  }
+  .volcano-logo img {
+    height: 36px;
+    width: auto;
+    display: block;
+  }
+
+  /* NAV */
+  .nav {
+    position: fixed;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: rgba(255,255,255,0.04);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 12px 24px;
+    border-radius: 100px;
+  }
+
+  .nav-btn {
+    background: none;
+    border: none;
+    color: var(--white);
+    cursor: pointer;
+    font-size: 20px;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+    line-height: 1;
+  }
+  .nav-btn:hover { opacity: 1; }
+
+  .slide-counter {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--gray);
+    min-width: 50px;
+    text-align: center;
+  }
+
+  .progress-dots {
+    display: flex;
+    gap: 6px;
+  }
+  .dot {
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+  .dot.active {
+    background: var(--red);
+    width: 20px;
+    border-radius: 2px;
+  }
+
+  /* SLIDE 1 – Hero */
+  #s1 {
+    background: var(--black);
+  }
+  #s1 .bg-lines {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 80px,
+      rgba(255,255,255,0.02) 80px,
+      rgba(255,255,255,0.02) 81px
+    );
+  }
+  #s1 .red-accent {
+    position: absolute;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(232,0,45,0.15) 0%, transparent 70%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: pulse 4s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%,100% { transform: translate(-50%,-50%) scale(1); opacity: 0.8; }
+    50% { transform: translate(-50%,-50%) scale(1.15); opacity: 1; }
+  }
+  #s1 .hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+  }
+  #s1 .tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 4px;
+    color: var(--red);
+    text-transform: uppercase;
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.3s forwards;
+  }
+  #s1 h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(52px, 8vw, 110px);
+    line-height: 0.9;
+    letter-spacing: 2px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.5s forwards;
+  }
+  #s1 h1 > span {
+    display: block;
+    color: var(--red);
+  }
+  #s1 h1 .hero-line {
+    display: block;
+    color: var(--white);
+    font-style: normal;
+    white-space: nowrap;
+    margin-top: 0.05em;
+  }
+  #s1 h1 .hero-line .hero-highlight {
+    display: inline;
+    color: var(--gold);
+  }
+  #s1 .subtitle {
+    margin-top: 32px;
+    font-size: 16px;
+    color: var(--gray);
+    letter-spacing: 1px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.8s forwards;
+  }
+  #s1 .bottom-bar {
+    position: absolute;
+    bottom: 80px;
+    left: 0; right: 0;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 60px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: rgba(255,255,255,0.2);
+    letter-spacing: 2px;
+    z-index: 2;
+    opacity: 0;
+    animation: fadeIn 1s 1.2s forwards;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* SLIDE 2 – Statistika */
+  #s2 {
+    background: var(--dark);
+    flex-direction: row;
+    align-items: stretch;
+  }
+  #s2 .left-panel {
+    flex: 1;
+    min-width: 0;
+    padding: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+  }
+  #s2 .left-panel-inner {
+    width: 100%;
+    max-width: 400px;
+    text-align: left;
+  }
+  #s2 .right-panel {
+    width: 42%;
+    background: var(--dark2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  #s2 .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--red);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  #s2 h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(36px, 5vw, 56px);
+    line-height: 0.95;
+    margin-bottom: 24px;
+  }
+  #s2 .stat-block {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+  #s2 .big-number {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 80px;
+    line-height: 0.85;
+    color: var(--red);
+  }
+  #s2 .big-unit {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 40px;
+    color: rgba(255,255,255,0.3);
+    margin-bottom: 8px;
+  }
+  #s2 .stat-desc {
+    font-size: 14px;
+    color: var(--gray);
+    max-width: 100%;
+    line-height: 1.6;
+  }
+  /* Phone mockup – static (no glow) */
+  .phone-mockup {
+    width: 260px;
+    height: 500px;
+    border: 2px solid rgba(255,255,255,0.12);
+    border-radius: 44px;
+    background: var(--dark3);
+    position: relative;
+    overflow: hidden;
+  }
+  .phone-mockup::before {
+    content: '';
+    position: absolute;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 78px; height: 8px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 4px;
+  }
+  .phone-screen {
+    position: absolute;
+    top: 38px; bottom: 14px;
+    left: 10px; right: 10px;
+    background: var(--dark);
+    border-radius: 34px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 24px 14px;
+    gap: 12px;
+  }
+  .phone-icons {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .phone-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .phone-icon.kick { background: #53FC18; color: #0A0A0A; }
+  .phone-icon.ig { background: linear-gradient(135deg, #833AB4, #FD1D1D, #F77737); }
+  .phone-icon.tiktok { background: #010101; border: 1px solid #69C9D0; color: #69C9D0; font-size: 18px; }
+  .phone-icon.more { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5); font-size: 20px; letter-spacing: 2px; }
+
+  /* SLIDE 3 – Problemi */
+  #s3 {
+    background: var(--black);
+  }
+  #s3 .content {
+    position: relative;
+    z-index: 2;
+    max-width: 900px;
+    width: 100%;
+    padding: 60px;
+  }
+  #s3 .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--gray);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  #s3 h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px;
+    margin-bottom: 48px;
+    color: rgba(255,255,255,0.15);
+  }
+  #s3 h2 span { color: var(--white); }
+  .problem-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .problem-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 24px;
+    background: var(--dark2);
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.05);
+    transition: border-color 0.3s;
+  }
+  .problem-item:hover {
+    border-color: rgba(232,0,45,0.3);
+  }
+  .problem-item.solution-card {
+    border-color: rgba(34,197,94,0.4);
+    background: rgba(34,197,94,0.08);
+  }
+  .problem-item.solution-card:hover {
+    border-color: var(--green);
+  }
+  .problem-icon {
+    width: 32px; height: 32px;
+    background: rgba(232,0,45,0.1);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--red);
+    font-size: 14px;
+  }
+  .problem-item.solution-card .problem-icon {
+    background: none;
+    color: var(--white);
+    font-size: 18px;
+  }
+  .problem-text {
+    font-size: 14px;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.5;
+    padding-top: 6px;
+  }
+
+  /* SLIDE 4 & 5 – Flow */
+  #s4, #s5 {
+    background: var(--dark);
+  }
+  .flow-wrapper {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 1000px;
+    padding: 60px;
+  }
+  #s5 .flow-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  #s5 .flow-wrapper .flow-title,
+  #s5 .flow-wrapper .flow-steps,
+  #s5 .flow-wrapper .flow-loop-arrow {
+    align-self: stretch;
+  }
+  .flow-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--red);
+    letter-spacing: 4px;
+    margin-bottom: 12px;
+  }
+  .flow-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 56px;
+    margin-bottom: 60px;
+  }
+  .flow-steps {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    position: relative;
+  }
+  .flow-step {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+  .step-num {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: var(--dark3);
+    border: 2px solid rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--gray);
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 2;
+    transition: all 0.3s;
+  }
+  .flow-step.active .step-num {
+    background: var(--red);
+    border-color: var(--red);
+    color: var(--white);
+    box-shadow: 0 0 30px rgba(232,0,45,0.4);
+  }
+  #s5 .step-num.step-num-outline {
+    background: transparent !important;
+    border: 2px solid var(--red);
+    color: var(--white);
+    box-shadow: none !important;
+  }
+  .step-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.4);
+    text-align: center;
+  }
+  .flow-step.active .step-label { color: var(--white); }
+
+  .flow-connector {
+    flex: 0.5;
+    height: 2px;
+    background: rgba(255,255,255,0.08);
+    margin-bottom: 40px;
+    position: relative;
+  }
+  .flow-connector.active {
+    background: var(--red);
+  }
+  .flow-connector-arrow {
+    position: absolute;
+    right: -6px;
+    top: -5px;
+    width: 0; height: 0;
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    border-left: 8px solid rgba(255,255,255,0.08);
+  }
+  .flow-connector.active .flow-connector-arrow {
+    border-left-color: var(--red);
+  }
+
+  /* Slide 5: connector wrap for reset X above the arrow */
+  .flow-connector-wrap {
+    flex: 0.5;
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-bottom: 40px;
+  }
+  .flow-connector-wrap .flow-connector {
+    margin-bottom: 0;
+  }
+  .flow-reset-above {
+    position: absolute;
+    left: 50%;
+    bottom: 100%;
+    transform: translateX(-50%);
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    z-index: 3;
+  }
+  .flow-loop-arrow {
+    margin-top: 32px;
+    padding: 0 5%;
+  }
+  .flow-loop-arrow svg {
+    display: block;
+    width: 100%;
+    height: 48px;
+  }
+  .flow-loop-arrow path {
+    fill: none;
+    stroke: rgba(232,0,45,0.5);
+    stroke-width: 2;
+    stroke-dasharray: 8 6;
+  }
+  .flow-loop-arrow polygon {
+    fill: rgba(232,0,45,0.5);
+  }
+
+  /* Reset arrow for slide 5 */
+  .reset-arrow {
+    position: absolute;
+    bottom: -70px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .reset-x {
+    width: 40px; height: 40px;
+    background: rgba(232,0,45,0.15);
+    border: 2px solid var(--red);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--red);
+    font-size: 18px;
+    font-weight: 700;
+    animation: xPulse 1.5s ease-in-out infinite;
+  }
+  @keyframes xPulse {
+    0%,100% { box-shadow: 0 0 0 0 rgba(232,0,45,0.4); }
+    50% { box-shadow: 0 0 0 12px rgba(232,0,45,0); }
+  }
+  .reset-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--red);
+    letter-spacing: 2px;
+    text-align: center;
+  }
+  .curved-arrow {
+    position: absolute;
+    bottom: -90px;
+    left: 0; right: 0;
+    text-align: center;
+    font-size: 36px;
+    color: rgba(232,0,45,0.5);
+    animation: arrowBounce 1s ease-in-out infinite;
+  }
+  @keyframes arrowBounce {
+    0%,100% { transform: translateX(0); }
+    50% { transform: translateX(-8px); }
+  }
+
+  /* SLIDE 6 – Benefiti */
+  #s6 {
+    background: var(--black);
+  }
+  #s6 .bg-grid {
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+  #s6 .content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 1100px;
+    padding: 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+  #s6 .left h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(48px, 6vw, 80px);
+    line-height: 0.95;
+    margin-bottom: 20px;
+  }
+  #s6 .left h2 span { color: var(--red); }
+  #s6 .left p {
+    font-size: 14px;
+    color: var(--gray);
+    line-height: 1.7;
+    max-width: 320px;
+  }
+  #s6 .left .section-label {
+    font-size: 13px;
+    letter-spacing: 4px;
+  }
+  /* Crveni / label tekst iznad naslova – veći svuda */
+  .section-label, .flow-label {
+    font-size: 12px;
+  }
+  .benefit-card.benefit-card--green {
+    border-color: rgba(34,197,94,0.35);
+    background: rgba(34,197,94,0.08);
+  }
+  .benefit-card.benefit-card--green:hover {
+    border-color: var(--green);
+  }
+  .benefit-card.benefit-card--green::before {
+    background: var(--green);
+  }
+  .benefit-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .benefit-card {
+    padding: 20px;
+    background: var(--dark2);
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.05);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s, border-color 0.3s;
+  }
+  .benefit-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(232,0,45,0.3);
+  }
+  .benefit-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--red);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s;
+  }
+  .benefit-card:hover::before { transform: scaleX(1); }
+  .benefit-icon { font-size: 24px; margin-bottom: 8px; }
+  .benefit-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 4px;
+  }
+  .benefit-desc {
+    font-size: 11px;
+    color: var(--gray);
+    line-height: 1.5;
+  }
+
+  /* SLIDE 7 – Alati */
+  #s7 {
+    background: var(--dark);
+  }
+  #s7 .content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 1100px;
+    padding: 60px;
+  }
+  #s7 .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--red);
+    letter-spacing: 4px;
+    margin-bottom: 12px;
+  }
+  #s7 h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px;
+    margin-bottom: 48px;
+  }
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+  .tool-card {
+    background: var(--dark3);
+    border-radius: 16px;
+    padding: 32px 24px;
+    border: 1px solid rgba(255,255,255,0.06);
+    text-align: center;
+    transition: all 0.3s;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .tool-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(255,255,255,0.15);
+  }
+  .tool-card.highlighted {
+    border-color: var(--red);
+    background: rgba(232,0,45,0.08);
+  }
+  .tool-card.highlighted::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 0%, rgba(232,0,45,0.2) 0%, transparent 60%);
+  }
+  .tool-emoji {
+    font-size: 40px;
+    margin-bottom: 16px;
+    display: block;
+  }
+  .tool-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .tool-desc {
+    font-size: 12px;
+    color: var(--gray);
+    line-height: 1.5;
+  }
+
+  /* SLIDE 8 – Instagram breakdown */
+  #s8 {
+    background: var(--black);
+  }
+  #s8 .content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 1100px;
+    padding: 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+  #s8 .left {}
+  #s8 .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--red);
+    letter-spacing: 4px;
+    margin-bottom: 12px;
+  }
+  #s8 h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 60px;
+    line-height: 0.95;
+    margin-bottom: 40px;
+  }
+  .ig-segment {
+    margin-bottom: 24px;
+  }
+  .seg-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .seg-name {
+    font-weight: 600;
+    font-size: 14px;
+  }
+  .seg-pct {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    color: var(--red);
+  }
+  .seg-bar {
+    height: 6px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 6px;
+  }
+  .seg-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: var(--red);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 1s ease;
+  }
+  .slide.active .seg-fill { transform: scaleX(1); }
+  .seg-stats {
+    font-size: 11px;
+    color: var(--gray);
+  }
+
+  /* Donut chart */
+  .chart-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+  }
+  .donut-wrap {
+    position: relative;
+    width: 220px; height: 220px;
+  }
+  .donut-wrap svg {
+    transform: rotate(-90deg);
+  }
+  .donut-center {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .donut-total {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    color: var(--white);
+  }
+  .donut-label {
+    font-size: 10px;
+    color: var(--gray);
+    text-align: center;
+  }
+  .chart-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+  }
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* SLIDE 9 – Zasto mi */
+  #s9 {
+    background: var(--dark);
+  }
+  #s9 .content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 1100px;
+    padding: 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: start;
+  }
+  #s9 h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px;
+    line-height: 0.9;
+    margin-bottom: 8px;
+  }
+  #s9 h2 span { color: var(--red); }
+  #s9 .intro {
+    font-size: 13px;
+    color: var(--gray);
+    line-height: 1.7;
+    margin-top: 16px;
+  }
+  .stats-showcase {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 12px;
+  }
+  .showcase-stat {
+    background: var(--dark3);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+  .showcase-stat .num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    color: var(--red);
+    line-height: 1;
+  }
+  .showcase-stat .desc {
+    font-size: 11px;
+    color: var(--gray);
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+  .credentials-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .cred-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    background: var(--dark3);
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.04);
+    font-size: 13px;
+    color: rgba(255,255,255,0.75);
+    transition: border-color 0.2s;
+  }
+  .cred-item:hover { border-color: rgba(232,0,45,0.2); }
+  .cred-check {
+    width: 20px; height: 20px;
+    background: rgba(232,0,45,0.15);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--red);
+  }
+  .cred-check svg {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+  }
+
+  /* SLIDE 10 – Screenshots placeholder */
+  #s10 {
+    background: var(--black);
+  }
+  #s10 .content {
+    position: relative; z-index: 2;
+    width: 100%; max-width: 1100px;
+    padding: 60px;
+    text-align: center;
+  }
+  #s10 h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px;
+    margin-bottom: 12px;
+  }
+  #s10 .subtitle {
+    font-size: 14px;
+    color: var(--gray);
+    margin-bottom: 40px;
+  }
+  .screenshot-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .screenshot-placeholder {
+    aspect-ratio: 9/16;
+    background: var(--dark2);
+    border-radius: 12px;
+    border: 1px dashed rgba(255,255,255,0.12);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: rgba(255,255,255,0.2);
+    font-size: 11px;
+    font-family: 'Space Mono', monospace;
+  }
+  .screenshot-placeholder .icon { font-size: 28px; opacity: 0.3; }
+
+  /* SLIDE 13 – Tim struktura */
+  #s13 {
+    background: var(--dark);
+  }
+  #s13 .content {
+    position: relative; z-index: 2;
+    width: 100%; max-width: 1100px;
+    padding: 60px;
+  }
+  #s13 h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px;
+    margin-bottom: 48px;
+  }
+  #s13 h2 span { color: var(--red); }
+  .org-chart {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+  .org-top {
+    background: var(--red);
+    padding: 12px 32px;
+    border-radius: 8px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 2px;
+  }
+  .org-line {
+    width: 2px;
+    height: 30px;
+    background: rgba(255,255,255,0.15);
+  }
+  .org-tim-frame {
+    border: 2px solid rgba(255,255,255,0.2);
+    border-radius: 12px;
+    padding: 20px 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    margin: 0 auto;
+  }
+  .org-tim-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 2px;
+    color: var(--gray);
+    font-weight: 700;
+  }
+  .org-row {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    justify-content: center;
+  }
+  .org-branch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+  .org-node {
+    background: var(--dark3);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    white-space: nowrap;
+  }
+  .org-node.team { background: rgba(232,0,45,0.1); border-color: rgba(232,0,45,0.3); }
+  .org-subrow {
+    display: flex;
+    gap: 8px;
+    margin-top: 0;
+  }
+  .org-sub {
+    background: var(--dark3);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 11px;
+    color: var(--gray);
+    text-align: center;
+    white-space: nowrap;
+  }
+  .org-h-line {
+    height: 2px;
+    background: rgba(255,255,255,0.08);
+    width: 100%;
+    margin: 16px 0;
+  }
+  .org-section {
+    background: var(--dark3);
+    border-radius: 12px;
+    padding: 16px 20px;
+    min-width: 160px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .org-section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    color: var(--red);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .org-section-title .org-logo {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    display: inline-block;
+    vertical-align: middle;
+  }
+  .org-section-title .org-logo.instagram { color: currentColor; }
+  .org-section-title .org-logo.kick { color: #53FC18; }
+  .org-section-title .org-plus {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--red);
+  }
+  .org-section-items {
+    font-size: 11px;
+    color: var(--gray);
+    line-height: 1.8;
+  }
+
+  /* SLIDE 14 – Tim cards */
+  #s14 {
+    background: var(--black);
+  }
+  #s14 .content {
+    position: relative; z-index: 2;
+    width: 100%; max-width: 1000px;
+    padding: 60px;
+  }
+  #s14 .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--red);
+    letter-spacing: 4px;
+    margin-bottom: 12px;
+  }
+  #s14 h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px;
+    margin-bottom: 48px;
+  }
+  .team-cards {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(200px, 1fr));
+    gap: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .team-card {
+    background: var(--dark2);
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.06);
+    transition: transform 0.3s, border-color 0.3s;
+  }
+  .team-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(232,0,45,0.3);
+  }
+  .team-avatar {
+    width: 100%;
+    aspect-ratio: 1;
+    background: var(--dark3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 56px;
+    color: rgba(255,255,255,0.1);
+    position: relative;
+    overflow: hidden;
+  }
+  .team-avatar img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+  }
+  .team-avatar::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 50%;
+    background: linear-gradient(transparent, var(--dark2));
+  }
+  .team-avatar .placeholder-text {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: rgba(255,255,255,0.2);
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+  .team-avatar:has(img) .placeholder-text {
+    display: none;
+  }
+  .team-info {
+    padding: 20px;
+  }
+  .team-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    margin-bottom: 4px;
+  }
+  .team-role {
+    font-size: 12px;
+    color: var(--red);
+    margin-bottom: 12px;
+    font-weight: 500;
+  }
+  .team-desc {
+    font-size: 12px;
+    color: var(--gray);
+    line-height: 1.6;
+  }
+
+  /* SLIDE 16 – Instagram stats */
+  #s16 {
+    background: linear-gradient(135deg, #0A0A0A 0%, #1a0a0a 100%);
+  }
+  #s16 .content {
+    position: relative; z-index: 2;
+    text-align: center;
+  }
+  #s16 .big-stat {
+    margin-bottom: 24px;
+  }
+  #s16 .big-stat .num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(80px, 15vw, 160px);
+    line-height: 0.85;
+    background: linear-gradient(135deg, var(--white) 30%, var(--red));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  #s16 .big-stat .label {
+    font-size: 18px;
+    color: var(--gray);
+    margin-top: 8px;
+  }
+
+  /* SLIDE 17 – Kick */
+  #s17 {
+    background: #0A0A0A;
+  }
+  #s17 .content {
+    position: relative; z-index: 2;
+    width: 100%; max-width: 1000px;
+    padding: 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+  #s17 h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 64px;
+    line-height: 0.9;
+    margin-bottom: 24px;
+  }
+  #s17 h2 span { color: #53FC18; }
+  .kick-features {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .kick-feat {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    color: rgba(255,255,255,0.7);
+  }
+  .kick-bullet {
+    width: 6px; height: 6px;
+    background: #53FC18;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .kick-screen {
+    background: var(--dark2);
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(83,252,24,0.15);
+    aspect-ratio: 16/9;
+    display: flex;
+    flex-direction: column;
+  }
+  .kick-header {
+    background: var(--dark3);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .kick-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    color: #53FC18;
+    letter-spacing: 1px;
+  }
+  .kick-live {
+    background: #E8002D;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    animation: livePulse 1.5s ease-in-out infinite;
+  }
+  @keyframes livePulse {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+  .kick-body {
+    flex: 1;
+    background: var(--dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255,255,255,0.1);
+    font-size: 40px;
+  }
+  .kick-footer {
+    background: var(--dark3);
+    padding: 8px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .kick-viewers {
+    font-size: 11px;
+    color: var(--gray);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .viewer-dot {
+    width: 6px; height: 6px;
+    background: #53FC18;
+    border-radius: 50%;
+  }
+
+  /* SLIDE 18 – Influencer highlight */
+  #s18 {
+    background: var(--black);
+  }
+  #s18 .content {
+    position: relative; z-index: 2;
+    width: 100%; max-width: 1000px;
+    padding: 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+  #s18 h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 56px;
+    line-height: 0.9;
+    margin-bottom: 24px;
+  }
+  #s18 h2 span { color: var(--gold); }
+  .influencer-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .inf-stat {
+    background: var(--dark2);
+    border-radius: 10px;
+    padding: 16px;
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+  .inf-stat .n {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    color: var(--gold);
+  }
+  .inf-stat .l {
+    font-size: 11px;
+    color: var(--gray);
+  }
+  .influencer-card {
+    background: var(--dark2);
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(255,184,0,0.2);
+  }
+  .inf-banner {
+    height: 180px;
+    background: var(--dark3);
+    overflow: hidden;
+  }
+  .inf-banner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .inf-profile {
+    padding: 0 20px 20px;
+    margin-top: -20px;
+    position: relative;
+  }
+  .inf-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 3px solid var(--dark2);
+    overflow: hidden;
+    margin-bottom: 12px;
+    flex-shrink: 0;
+  }
+  .inf-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .inf-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    margin-bottom: 4px;
+  }
+  .inf-badge {
+    display: inline-block;
+    background: rgba(255,184,0,0.15);
+    border: 1px solid rgba(255,184,0,0.3);
+    color: var(--gold);
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* SLIDE 20 – Paketi */
+  #s20 {
+    background: var(--dark);
+  }
+  #s20 .content {
+    position: relative; z-index: 2;
+    width: 100%; max-width: 1100px;
+    padding: 60px;
+  }
+  #s20 .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--red);
+    letter-spacing: 4px;
+    margin-bottom: 12px;
+  }
+  #s20 h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px;
+    margin-bottom: 40px;
+  }
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  .pricing-card {
+    background: var(--dark3);
+    border-radius: 20px;
+    padding: 36px;
+    border: 1px solid rgba(255,255,255,0.07);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s, border-color 0.3s;
+  }
+  .pricing-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255,255,255,0.15);
+  }
+  .pricing-card.featured {
+    border-color: var(--gold);
+    background: linear-gradient(135deg, var(--dark3), #1a1500);
+  }
+  .pricing-card.featured::before {
+    content: '⭐ PREPORUČENO';
+    position: absolute;
+    top: 16px; right: 16px;
+    background: var(--gold);
+    color: var(--black);
+    font-size: 9px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 100px;
+    letter-spacing: 1px;
+  }
+  .pkg-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+  .pkg-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 56px;
+    line-height: 1;
+    margin-bottom: 24px;
+    color: var(--red);
+  }
+  .pricing-card.featured .pkg-price { color: var(--gold); }
+  .pkg-divider {
+    height: 1px;
+    background: rgba(255,255,255,0.06);
+    margin-bottom: 20px;
+  }
+  .pkg-section-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--gray);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .pkg-items {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+  .pkg-items li {
+    font-size: 12px;
+    color: rgba(255,255,255,0.65);
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    line-height: 1.4;
+  }
+  .pkg-items li::before {
+    content: '→';
+    color: var(--red);
+    flex-shrink: 0;
+    font-size: 10px;
+    margin-top: 2px;
+  }
+  .pricing-card.featured .pkg-items li::before { color: var(--gold); }
+
+  /* SLIDE 21 – Volcano Package */
+  #s21 {
+    background: radial-gradient(ellipse at 30% 50%, rgba(232,0,45,0.12) 0%, transparent 60%),
+                var(--black);
+  }
+  #s21 .content {
+    position: relative; z-index: 2;
+    width: 100%; max-width: 1100px;
+    padding: 60px;
+  }
+  #s21 .hero-package {
+    background: var(--dark2);
+    border-radius: 24px;
+    border: 1px solid rgba(232,0,45,0.3);
+    overflow: hidden;
+    position: relative;
+  }
+  #s21 .hero-package::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--red), var(--gold), var(--red));
+    background-size: 200%;
+    animation: shimmer 3s linear infinite;
+  }
+  @keyframes shimmer {
+    0% { background-position: 0%; }
+    100% { background-position: 200%; }
+  }
+  .hp-header {
+    padding: 40px 48px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .hp-title-group {}
+  .hp-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--red);
+    letter-spacing: 4px;
+    margin-bottom: 8px;
+  }
+  .hp-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 64px;
+    line-height: 0.9;
+  }
+  .hp-name span { color: var(--red); }
+  .hp-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 80px;
+    color: var(--white);
+    line-height: 0.85;
+    text-align: right;
+  }
+  .hp-price span {
+    display: block;
+    font-size: 14px;
+    color: var(--gray);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    text-align: right;
+    margin-top: 4px;
+  }
+  .hp-body {
+    padding: 40px 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 32px;
+  }
+  .hp-section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 2px;
+    color: var(--red);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .hp-items {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .hp-items li {
+    font-size: 12px;
+    color: rgba(255,255,255,0.65);
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    line-height: 1.4;
+  }
+  .hp-items li::before {
+    content: '◆';
+    color: var(--red);
+    flex-shrink: 0;
+    font-size: 8px;
+    margin-top: 3px;
+  }
+
+  /* Generic elements */
+  .red-line {
+    width: 48px; height: 3px;
+    background: var(--red);
+    margin: 16px 0;
+  }
+
+  /* Slide enter animation */
+  .slide.active .slide-inner {
+    animation: slideIn 0.6s ease forwards;
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 1200px) {
+    .team-cards { grid-template-columns: repeat(3, 1fr); }
+  }
+  /* Responsive adjustments */
+  @media (max-width: 900px) {
+    #s2, #s8, #s9 { flex-direction: column; }
+    .tools-grid { grid-template-columns: repeat(2, 1fr); }
+    .pricing-grid { grid-template-columns: 1fr; }
+    #s17 .content, #s18 .content { grid-template-columns: 1fr; }
+  }
+
+  /* Mobile-first: small screens and touch */
+  @media (max-width: 768px) {
+    #s1 .bottom-bar { padding: 0 20px; bottom: 100px; font-size: 9px; }
+    #s2 .left-panel { padding: 32px 24px; }
+    #s2 .left-panel-inner { max-width: 340px; }
+    #s2 .big-number { font-size: 64px; }
+    #s2 .right-panel { width: 100%; min-height: 280px; }
+    .phone-mockup { width: 200px; height: 385px; }
+    .flow-wrapper, #s3 .content, #s6 .content, #s7 .content,
+    #s8 .content, #s9 .content, #s10 .content, #s13 .content,
+    #s14 .content, #s20 .content, #s21 .content { padding: 32px 20px; }
+    #s3 h2, #s7 h2, #s13 h2, #s14 h2, #s20 h2 { font-size: 48px; }
+    #s6 .content { grid-template-columns: 1fr; gap: 32px; }
+    .problem-list { grid-template-columns: 1fr; }
+    .flow-steps { flex-wrap: wrap; justify-content: center; gap: 16px; }
+    .flow-connector { flex: none; width: 20px; height: 2px; margin: 0; }
+    .flow-connector-arrow { display: none; }
+    .team-cards { grid-template-columns: 1fr; }
+    .nav { bottom: max(20px, env(safe-area-inset-bottom)); padding: 14px 20px; gap: 14px; }
+    .nav-btn { font-size: 24px; min-width: 44px; min-height: 44px; }
+    .dot { min-width: 12px; min-height: 12px; width: 8px; height: 8px; }
+    .dot.active { width: 24px; }
+    .screenshot-grid { grid-template-columns: repeat(2, 1fr); }
+    .volcano-logo { top: 16px; right: 16px; }
+    .volcano-logo img { height: 28px; }
+  }
+
+  @media (max-width: 480px) {
+    #s1 h1 { font-size: 42px; }
+    #s1 .subtitle { font-size: 14px; }
+    .hp-body { grid-template-columns: 1fr; }
+    .pricing-card { padding: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<div class="volcano-logo">
+  <img src="logo%20volcano.webp" alt="Volcano Bet"/>
+</div>
+
+<div class="slides-wrapper">
+
+  <!-- SLIDE 1 -->
+  <div class="slide active" id="s1">
+    <div class="bg-lines"></div>
+    <div class="red-accent"></div>
+    <div class="hero-content slide-inner">
+      <div class="tag">× Volcano Bet Partnerstvo ×</div>
+      <h1>
+        Sve na<br><span>jednom mestu</span>
+        <span class="hero-line">vi na <span class="hero-highlight">svim</span> mestima</span>
+      </h1>
+      <div class="subtitle">Prva ključ u ruke agencija na Balkanu — Sequence Digital</div>
+    </div>
+    <div class="bottom-bar">
+      <span>SEQUENCE DIGITAL AGENCY</span>
+      <span>2025</span>
+      <span>VOLCANO BET × PARTNERSTVO</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 2 -->
+  <div class="slide" id="s2">
+    <div class="left-panel">
+      <div class="left-panel-inner slide-inner">
+        <div class="section-label">Zašto digitalni marketing</div>
+        <h2>Najbolji kanal<br>do vaše<br>ciljne grupe</h2>
+        <div class="stat-block">
+          <div class="big-number">217</div>
+          <div class="big-unit">min</div>
+        </div>
+        <div class="stat-desc">Prosečna osoba u Srbiji dnevno provede oko <strong>217 minuta</strong> na društvenim mrežama — svaki igrač je već tamo.</div>
+      </div>
+    </div>
+    <div class="right-panel">
+      <div class="phone-mockup">
+        <div class="phone-screen">
+          <div class="phone-icons">
+            <div class="phone-icon kick">KICK</div>
+            <div class="phone-icon ig">📸</div>
+            <div class="phone-icon tiktok">♪</div>
+            <div class="phone-icon more">⋯</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 3 -->
+  <div class="slide" id="s3">
+    <div class="content slide-inner">
+      <div class="section-label">Problem</div>
+      <h2><span>INFLUENSERI</span></h2>
+      <div class="red-line"></div>
+      <div class="problem-list">
+        <div class="problem-item"><div class="problem-icon">⚡</div><div class="problem-text"><strong>Loša organizacija</strong> — Neispoštovani rokovi, nekoordinisan sadržaj, propuštene prilike</div></div>
+        <div class="problem-item"><div class="problem-icon">💣</div><div class="problem-text"><strong>Veliki ego</strong> — Otežana komunikacija, nesaradnja po brend uputstvima</div></div>
+        <div class="problem-item"><div class="problem-icon">📊</div><div class="problem-text"><strong>Protive se izveštavanju</strong> — Bez podataka, bez uvida u stvarni doseg i rezultate</div></div>
+        <div class="problem-item"><div class="problem-icon">🔀</div><div class="problem-text"><strong>Previše saradnji istovremeno</strong> — Vaš brend gubi fokus, diluje se poruka</div></div>
+        <div class="problem-item"><div class="problem-icon">⏱</div><div class="problem-text"><strong>Kratkoročna orijentacija</strong> — Fokus na jednokratne isplate, bez izgradnje zajednice</div></div>
+        <div class="problem-item solution-card">
+          <div class="problem-icon"><i class="fa-solid fa-check"></i></div>
+          <div class="problem-text"><strong style="color: var(--white);">Sequence rešava sve ovo</strong> — ključ u ruke sistem sa punom kontrolom i izveštavanjem</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4 -->
+  <div class="slide" id="s4">
+    <div class="flow-wrapper slide-inner">
+      <div class="flow-title">INFLUENSERI - DIREKTNA SARADNJA</div>
+      <div class="flow-steps">
+        <div class="flow-step active">
+          <div class="step-num">1</div>
+          <div class="step-label">Pronalaženje</div>
+        </div>
+        <div class="flow-connector active"><div class="flow-connector-arrow"></div></div>
+        <div class="flow-step active">
+          <div class="step-num">2</div>
+          <div class="step-label">Saradnja</div>
+        </div>
+        <div class="flow-connector active"><div class="flow-connector-arrow"></div></div>
+        <div class="flow-step active">
+          <div class="step-num">3</div>
+          <div class="step-label">Praćenje</div>
+        </div>
+        <div class="flow-connector"><div class="flow-connector-arrow"></div></div>
+        <div class="flow-step">
+          <div class="step-num">4</div>
+          <div class="step-label">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5 -->
+  <div class="slide" id="s5">
+    <div class="flow-wrapper slide-inner">
+      <div class="flow-title">Direktna saradnja</div>
+      <div class="flow-steps" style="position: relative;">
+        <div class="flow-step active">
+          <div class="step-num">1</div>
+          <div class="step-label">Pronalaženje</div>
+        </div>
+        <div class="flow-connector active"><div class="flow-connector-arrow"></div></div>
+        <div class="flow-step active">
+          <div class="step-num">2</div>
+          <div class="step-label">Saradnja</div>
+        </div>
+        <div class="flow-connector active"><div class="flow-connector-arrow"></div></div>
+        <div class="flow-step active">
+          <div class="step-num">3</div>
+          <div class="step-label">Praćenje</div>
+        </div>
+        <div class="flow-connector-wrap">
+          <div class="flow-reset-above">
+            <div class="reset-x">✕</div>
+          </div>
+          <div class="flow-connector active" style="background: var(--red);"><div class="flow-connector-arrow" style="border-left-color: var(--red);"></div></div>
+        </div>
+        <div class="flow-step active">
+          <div class="step-num step-num-outline">4</div>
+          <div class="step-label">Zamena</div>
+        </div>
+      </div>
+
+      <!-- Isprekidana strelica od Zamene nazad do Pronalaženja -->
+      <div class="flow-loop-arrow">
+        <svg viewBox="0 0 400 48" preserveAspectRatio="none">
+          <path d="M 360 24 L 44 24" stroke-width="2"/>
+          <polygon points="24,24 40,14 40,34"/>
+        </svg>
+      </div>
+
+      <div style="margin-top: 24px; padding: 14px 20px; background: rgba(232,0,45,0.06); border: 1px solid rgba(232,0,45,0.2); border-radius: 10px; display: inline-flex; align-items: center; gap: 12px;">
+        <span style="font-size: 20px;">↺</span>
+        <span style="font-size: 13px; color: rgba(255,255,255,0.6);">Ako u bilo kojoj fazi dođe do problema — automatski se kreće od početka sa novim influenserom</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 6 -->
+  <div class="slide" id="s6">
+    <div class="bg-grid"></div>
+    <div class="content slide-inner">
+      <div class="left">
+        <div class="section-label" style="font-family:'Space Mono',monospace; color:var(--red); margin-bottom:12px;">Naše rešenje</div>
+        <h2>Ključ u<br><span>ruke</span><br>sistem</h2>
+        <div class="red-line"></div>
+        <p>Sve što vam treba za dominaciju na balkanskon tržištu — organizovano, izmerljivo i skalabilno.</p>
+      </div>
+      <div class="benefit-grid">
+        <div class="benefit-card">
+          <div class="benefit-icon">📡</div>
+          <div class="benefit-title">Sve platforme</div>
+          <div class="benefit-desc">Pokrivenost na svim relevantnim mrežama istovremeno</div>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon">🎨</div>
+          <div class="benefit-title">Brendirani sadržaj</div>
+          <div class="benefit-desc">Konzistentan vizuelni identitet Volcano Bet brenda</div>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon">🎯</div>
+          <div class="benefit-title">Stalna prisutnost</div>
+          <div class="benefit-desc">Konstantna vidljivost kod aktivnih igrača svakodnevno</div>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon">👥</div>
+          <div class="benefit-title">Zajednica</div>
+          <div class="benefit-desc">Izgradnja i aktivacija lojalne baze pratilaca / igrača</div>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon">📊</div>
+          <div class="benefit-title">Nedeljni izveštaj</div>
+          <div class="benefit-desc">Transparentni podaci o dosegu, angažmanu i rastu</div>
+        </div>
+        <div class="benefit-card benefit-card--green">
+          <div class="benefit-icon">🚀</div>
+          <div class="benefit-title">Maksimalan uticaj</div>
+          <div class="benefit-desc">Rast brenda kroz dokazanu strategiju i mreže</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 7 -->
+  <div class="slide" id="s7">
+    <div class="content slide-inner">
+      <div class="section-label">Naši alati</div>
+      <h2>Šta koristimo</h2>
+      <div class="tools-grid">
+        <div class="tool-card">
+          <span class="tool-emoji">📸</span>
+          <div class="tool-name">Instagram objave</div>
+          <div class="tool-desc">Sport, kazino i meme profili sa kombinovanim dosegom 700k+</div>
+        </div>
+        <div class="tool-card">
+          <span class="tool-emoji" style="color:#53FC18">📺</span>
+          <div class="tool-name">Kick Stream-eri</div>
+          <div class="tool-desc">Live brendirani streamovi sa najgledanijim kanalima na Balkanu</div>
+        </div>
+        <div class="tool-card">
+          <span class="tool-emoji">✂️</span>
+          <div class="tool-name">Kratak sadržaj</div>
+          <div class="tool-desc">Reels, Shorts i TikTok klipovi za viralni doseg</div>
+        </div>
+        <div class="tool-card">
+          <span class="tool-emoji">🏆</span>
+          <div class="tool-name">Izazovi i darivanja</div>
+          <div class="tool-desc">Giveaway i challenge formati koji privlače nove igrače</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 8 -->
+  <div class="slide" id="s8">
+    <div class="content slide-inner">
+      <div class="left">
+        <div class="section-label">Instagram mreža</div>
+        <h2>Instagram<br>objave</h2>
+
+        <div class="ig-segment">
+          <div class="seg-header">
+            <div class="seg-name">🎰 Kazino profili</div>
+            <div class="seg-pct">60%</div>
+          </div>
+          <div class="seg-bar"><div class="seg-fill" style="width:60%;"></div></div>
+          <div class="seg-stats">Više profila · Ø 15.000 pratilaca · Vidljivost 500.000+</div>
+        </div>
+
+        <div class="ig-segment">
+          <div class="seg-header">
+            <div class="seg-name">⚽ Sport profili</div>
+            <div class="seg-pct">20%</div>
+          </div>
+          <div class="seg-bar"><div class="seg-fill" style="width:20%;"></div></div>
+          <div class="seg-stats">Više profila · Ø 15.000 pratilaca · Vidljivost 100.000+</div>
+        </div>
+
+        <div class="ig-segment">
+          <div class="seg-header">
+            <div class="seg-name">😂 Meme profili</div>
+            <div class="seg-pct">10%</div>
+          </div>
+          <div class="seg-bar"><div class="seg-fill" style="width:10%;"></div></div>
+          <div class="seg-stats">Više profila · Ø 10.000 pratilaca · Vidljivost 100.000+</div>
+        </div>
+
+        <div style="margin-top: 24px; padding: 16px 20px; background: rgba(232,0,45,0.06); border: 1px solid rgba(232,0,45,0.2); border-radius: 10px; display: inline-flex; align-items: center; gap: 12px;">
+          <div style="font-family:'Bebas Neue',sans-serif; font-size:32px; color:var(--red);">700k+</div>
+          <div style="font-size:12px; color:var(--gray); line-height:1.4;">kombinovana<br>mesečna vidljivost</div>
+        </div>
+      </div>
+
+      <div class="chart-container">
+        <div class="donut-wrap">
+          <svg width="220" height="220" viewBox="0 0 220 220">
+            <!-- Kazino 60% -->
+            <circle cx="110" cy="110" r="80" fill="none" stroke="#1a1a1a" stroke-width="28"/>
+            <circle cx="110" cy="110" r="80" fill="none" stroke="#E8002D" stroke-width="28"
+              stroke-dasharray="301 502"
+              stroke-dashoffset="0">
+              <animate attributeName="stroke-dasharray" from="0 502" to="301 502" dur="1.2s" fill="freeze"/>
+            </circle>
+            <!-- Sport 20% -->
+            <circle cx="110" cy="110" r="80" fill="none" stroke="#FF4D6D" stroke-width="28"
+              stroke-dasharray="100 502"
+              stroke-dashoffset="-301">
+              <animate attributeName="stroke-dasharray" from="0 502" to="100 502" dur="1.2s" begin="0.3s" fill="freeze"/>
+            </circle>
+            <!-- Meme 10% -->
+            <circle cx="110" cy="110" r="80" fill="none" stroke="#3a1a1a" stroke-width="28"
+              stroke-dasharray="50 502"
+              stroke-dashoffset="-401">
+              <animate attributeName="stroke-dasharray" from="0 502" to="50 502" dur="1.2s" begin="0.6s" fill="freeze"/>
+            </circle>
+          </svg>
+          <div class="donut-center">
+            <div class="donut-total">700k+</div>
+            <div class="donut-label">mesečni<br>doseg</div>
+          </div>
+        </div>
+        <div class="chart-legend">
+          <div class="legend-item"><div class="legend-dot" style="background:#E8002D"></div>Kazino profili (60%)</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#FF4D6D"></div>Sport profili (20%)</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#5a2a2a"></div>Meme profili (10%)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 9 -->
+  <div class="slide" id="s9">
+    <div class="content slide-inner">
+      <div>
+        <div style="font-family:'Space Mono',monospace; font-size:12px; color:var(--red); letter-spacing:4px; margin-bottom:12px;">O nama</div>
+        <h2>Zašto<br><span>mi?</span></h2>
+        <p class="intro">Decenija iskustva u gaming i kockarničkoj industriji, izgrađena mreža, provereni rezultati.</p>
+        <div class="stats-showcase" style="margin-top: 24px;">
+          <div class="showcase-stat"><div class="num">30+</div><div class="desc">Ljudi u timu</div></div>
+          <div class="showcase-stat"><div class="num">6+</div><div class="desc">Godina u radu sa influenserima</div></div>
+          <div class="showcase-stat"><div class="num">9M</div><div class="desc">Pratilaca na in-house brendu</div></div>
+          <div class="showcase-stat"><div class="num">100+</div><div class="desc">YouTube kanala u saradnji</div></div>
+        </div>
+      </div>
+      <div class="credentials-list">
+        <div class="cred-item"><div class="cred-check"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17 4 12"/></svg></div>Mreža influensera iz branše</div>
+        <div class="cred-item"><div class="cred-check"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17 4 12"/></svg></div>Saradnja sa 100+ YouTube kanala</div>
+        <div class="cred-item"><div class="cred-check"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17 4 12"/></svg></div>Brend izgrađen od 0 → 9.000.000 pratilaca</div>
+        <div class="cred-item"><div class="cred-check"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17 4 12"/></svg></div>5 gaming kanala u portfoliju</div>
+        <div class="cred-item"><div class="cred-check"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17 4 12"/></svg></div>Iskustvo u kripto kazinima i gaming industriji</div>
+        <div class="cred-item"><div class="cred-check"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17 4 12"/></svg></div>E-commerce ekskluzivna partnerstva (in-house brend)</div>
+        <div class="cred-item"><div class="cred-check"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17 4 12"/></svg></div>&gt;2.500.000 pratilaca na in-house YT kanalu</div>
+        <div class="cred-item"><div class="cred-check"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17 4 12"/></svg></div>&gt;1.700.000 pratilaca na in-house Instagram stranici</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 10 – Screenshots placeholder -->
+  <div class="slide" id="s10">
+    <div class="content slide-inner">
+      <div style="font-family:'Space Mono',monospace; font-size:12px; color:var(--red); letter-spacing:4px; margin-bottom:12px; text-align:left;">In-House profili</div>
+      <h2 style="text-align:left;">Naši kanali</h2>
+      <div class="screenshot-grid">
+        <div class="screenshot-placeholder"><div class="icon">📱</div><div>Instagram<br>Screenshot</div></div>
+        <div class="screenshot-placeholder"><div class="icon">📺</div><div>YouTube<br>Screenshot</div></div>
+        <div class="screenshot-placeholder"><div class="icon">🎮</div><div>Kick<br>Screenshot</div></div>
+        <div class="screenshot-placeholder"><div class="icon">📊</div><div>Analytics<br>Screenshot</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 13 -->
+  <div class="slide" id="s13">
+    <div class="content slide-inner" style="max-width:1100px; padding:60px; width:100%; position:relative; z-index:2;">
+      <div style="font-family:'Space Mono',monospace; font-size:12px; color:var(--red); letter-spacing:4px; margin-bottom:12px;">Organizacija</div>
+      <h2 style="font-family:'Bebas Neue',sans-serif; font-size:72px; margin-bottom:40px;">Struktura <span style="color:var(--red);">tima</span></h2>
+
+      <div class="org-chart">
+        <div class="org-top">Koordinator</div>
+        <div class="org-line"></div>
+
+        <div class="org-tim-frame">
+          <div class="org-tim-label">TIM</div>
+          <div class="org-line" style="margin: 8px 0;"></div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:center;">
+            <div class="org-node">Kamerman</div>
+            <div class="org-node">Video editor</div>
+            <div class="org-node">Dizajner</div>
+            <div class="org-node">Strimeri</div>
+            <div class="org-node">Influenseri</div>
+            <div class="org-node">Account manager</div>
+          </div>
+        </div>
+
+        <div class="org-line"></div>
+
+        <div style="display:flex; gap:20px; flex-wrap:wrap; justify-content:center; margin-top:0;">
+          <div class="org-section">
+            <div class="org-section-title"><svg class="org-logo instagram" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>Instagram</div>
+            <div class="org-section-items">Brendirani profili<br>Story<br>Objave</div>
+          </div>
+          <div class="org-section">
+            <div class="org-section-title"><img class="org-logo kick" src="https://upload.wikimedia.org/wikipedia/commons/6/69/Kick.com_icon_logo.svg" alt="Kick" width="20" height="20"/>KICK</div>
+            <div class="org-section-items">Live stream-ovi<br>Brendirani kanal<br>Naš kanal</div>
+          </div>
+          <div class="org-section">
+            <div class="org-section-title"><span class="org-plus">+</span> Dodaci</div>
+            <div class="org-section-items">YouTube<br>Giveaway & Izazovi<br>IRL video</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 14 – Tim -->
+  <div class="slide" id="s14">
+    <div class="content slide-inner">
+      <div class="section-label">Upoznajte nas</div>
+      <h2>Tim</h2>
+      <div class="team-cards">
+        <div class="team-card">
+          <div class="team-avatar">
+            <img src="mateja.jpg" alt="Mateja Bulatović"/>
+            <div class="placeholder-text">Profilna slika<br>člana 1</div>
+          </div>
+          <div class="team-info">
+            <div class="team-name">Mateja Bulatović</div>
+            <div class="team-role">Osnivač & CEO</div>
+            <div class="team-desc">Dodati opis, iskustvo i uloga u Sequence timu.</div>
+          </div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">
+            <img src="stefan.jpg" alt="Stefan Mitrović"/>
+            <div class="placeholder-text">Profilna slika<br>člana 2</div>
+          </div>
+          <div class="team-info">
+            <div class="team-name">Stefan Mitrović</div>
+            <div class="team-role">Head of Influencer</div>
+            <div class="team-desc">Dodati opis, iskustvo i uloga u Sequence timu.</div>
+          </div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">
+            <div class="placeholder-text">Profilna slika<br>člana 3</div>
+          </div>
+          <div class="team-info">
+            <div class="team-name">Ime Prezime</div>
+            <div class="team-role">Creative Director</div>
+            <div class="team-desc">Dodati opis, iskustvo i uloga u Sequence timu.</div>
+          </div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">
+            <div class="placeholder-text">Profilna slika<br>člana 4</div>
+          </div>
+          <div class="team-info">
+            <div class="team-name">Ime Prezime</div>
+            <div class="team-role">Uloga</div>
+            <div class="team-desc">Dodati opis, iskustvo i uloga u Sequence timu.</div>
+          </div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">
+            <div class="placeholder-text">Profilna slika<br>člana 5</div>
+          </div>
+          <div class="team-info">
+            <div class="team-name">Ime Prezime</div>
+            <div class="team-role">Uloga</div>
+            <div class="team-desc">Dodati opis, iskustvo i uloga u Sequence timu.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 16 -->
+  <div class="slide" id="s16">
+    <div class="content slide-inner" style="text-align:center; position:relative; z-index:2;">
+      <div style="font-family:'Space Mono',monospace; font-size:12px; color:rgba(255,255,255,0.3); letter-spacing:4px; margin-bottom:40px;">Instagram mreža</div>
+      <div style="display:flex; gap:80px; justify-content:center; align-items:center;">
+        <div class="big-stat">
+          <div class="num">5+</div>
+          <div class="label">Instagram profila</div>
+        </div>
+        <div style="width:1px; height:100px; background:rgba(255,255,255,0.08);"></div>
+        <div class="big-stat">
+          <div class="num" style="color:var(--red);">500k+</div>
+          <div class="label">ukupno pratilaca</div>
+        </div>
+      </div>
+      <div style="margin-top:48px; padding:20px 40px; background:rgba(232,0,45,0.05); border:1px solid rgba(232,0,45,0.15); border-radius:12px; display:inline-block;">
+        <div style="font-size:13px; color:var(--gray);">Sve pod jednim krovom · Brendirani sadržaj · Aktivna zajednica</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 17 -->
+  <div class="slide" id="s17">
+    <div class="content slide-inner">
+      <div>
+        <div style="font-family:'Space Mono',monospace; font-size:12px; color:#53FC18; letter-spacing:4px; margin-bottom:12px;">Kick Platforma</div>
+        <h2>Razrađen<br><span>Kick</span><br>profil</h2>
+        <div style="width:48px; height:3px; background:#53FC18; margin:16px 0;"></div>
+        <div class="kick-features">
+          <div class="kick-feat"><div class="kick-bullet"></div>Razrađujemo vaš Kick profil</div>
+          <div class="kick-feat"><div class="kick-bullet"></div>Aktiviramo naš postojeći kanal</div>
+          <div class="kick-feat"><div class="kick-bullet"></div>Brendirani live streamovi</div>
+          <div class="kick-feat"><div class="kick-bullet"></div>Konstantno prisustvo i rast pratilaca</div>
+          <div class="kick-feat"><div class="kick-bullet"></div>Live promocija Volcano Bet kodova</div>
+        </div>
+      </div>
+      <div class="kick-screen">
+        <div class="kick-header">
+          <div class="kick-logo">KICK</div>
+          <div class="kick-live">● LIVE</div>
+          <div style="font-size:11px; color:var(--gray); margin-left:auto;">@VolcanoBet</div>
+        </div>
+        <div class="kick-body">🎰</div>
+        <div class="kick-footer">
+          <div class="kick-viewers"><div class="viewer-dot"></div>2.847 gledalaca</div>
+          <div style="font-size:10px; color:#53FC18; font-weight:600;">KOD: VOLCANO</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 18 -->
+  <div class="slide" id="s18">
+    <div class="content slide-inner">
+      <div>
+        <div style="font-family:'Space Mono',monospace; font-size:12px; color:var(--gold); letter-spacing:4px; margin-bottom:12px;">Influenser highlight</div>
+        <h2>Jedan od<br>najpopularnijih<br>na <span>Balkanu</span></h2>
+        <div style="font-size:14px; color:var(--gray); line-height:1.7; margin-top:12px; max-width:320px;">Ekskluzivna saradnja sa vodećim gaming influenserom regiona — direktan pristup najlojalnijim igračima.</div>
+        <div class="influencer-stats">
+          <div class="inf-stat"><div class="n">471k</div><div class="l">Instagram pratilaca</div></div>
+          <div class="inf-stat"><div class="n">2.5M</div><div class="l">YouTube pratilaca</div></div>
+          <div class="inf-stat"><div class="n">40h+</div><div class="l">mesečnih streamova</div></div>
+          <div class="inf-stat"><div class="n">🔥</div><div class="l">Top Balkan gaming kanal</div></div>
+        </div>
+      </div>
+      <div class="influencer-card">
+        <div class="inf-banner"><img src="lalovicSerbian1.jpg" alt=""/></div>
+        <div class="inf-profile">
+          <div class="inf-avatar"><img src="profilna.png" alt=""/></div>
+          <div class="inf-name">@SerbiangamesBL</div>
+          <div style="font-size:12px; color:var(--gray); margin: 4px 0 12px;">Gaming & Kazino sadržaj</div>
+          <div class="inf-badge">TOP BALKAN CREATOR</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 20 – Paketi -->
+  <div class="slide" id="s20">
+    <div class="content slide-inner">
+      <div class="section-label">Cenovnik</div>
+      <h2>Paketi</h2>
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <div class="pkg-name">Starter Pack</div>
+          <div class="pkg-price">4.200€</div>
+          <div class="pkg-divider"></div>
+          <div class="pkg-section-title">Instagram</div>
+          <ul class="pkg-items">
+            <li>@kockarinjo</li>
+            <li>@prokockan</li>
+            <li>@borillačke zanimljivosti</li>
+          </ul>
+          <div class="pkg-section-title">Kick Streaming</div>
+          <ul class="pkg-items">
+            <li>10h / Naši kanali</li>
+          </ul>
+          <div class="pkg-section-title">Dodatno</div>
+          <ul class="pkg-items">
+            <li>Viralni izazovi</li>
+          </ul>
+        </div>
+        <div class="pricing-card featured">
+          <div class="pkg-name">Celebrity Package</div>
+          <div class="pkg-price">8.000€</div>
+          <div class="pkg-divider"></div>
+          <div class="pkg-section-title">Instagram</div>
+          <ul class="pkg-items">
+            <li>@serbiangamesbl_yt (471k)</li>
+            <li>@kockarinjo</li>
+          </ul>
+          <div class="pkg-section-title">Kick Streaming</div>
+          <ul class="pkg-items">
+            <li>SerbianGames — 15h+</li>
+          </ul>
+          <div class="pkg-section-title">Dodatno</div>
+          <ul class="pkg-items">
+            <li>Viralni izazovi</li>
+            <li>Video iz kladionice</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 21 – Volcano Package -->
+  <div class="slide" id="s21">
+    <div class="content slide-inner">
+      <div style="font-family:'Space Mono',monospace; font-size:12px; color:var(--red); letter-spacing:4px; margin-bottom:20px;">Premium ponuda</div>
+      <div class="hero-package">
+        <div class="hp-header">
+          <div class="hp-title-group">
+            <div class="hp-eyebrow">× EKSKLUZIVNO ×</div>
+            <div class="hp-name">VOLCANO<br><span>PACKAGE</span></div>
+          </div>
+          <div class="hp-price">
+            12.000€
+            <span>mesečno · sve uključeno</span>
+          </div>
+        </div>
+        <div class="hp-body">
+          <div>
+            <div class="hp-section-title">📸 Instagram<br><span style="font-size:12px; color:var(--gray);">500k+ doseg</span></div>
+            <ul class="hp-items">
+              <li>@serbiangamesbl_yt (471k)</li>
+              <li>@kockarinjo</li>
+              <li>@prokockan</li>
+              <li>@sportske zanimljivosti</li>
+              <li>@borillačke zanimljivosti</li>
+            </ul>
+          </div>
+          <div>
+            <div class="hp-section-title">🟢 Kick Streaming<br><span style="font-size:12px; color:var(--gray);">40h+</span></div>
+            <ul class="hp-items">
+              <li>Brendirani kanal</li>
+              <li>SerbianGames stream</li>
+              <li>Dodatni kanali</li>
+              <li>40h+ ukupno mesečno</li>
+            </ul>
+          </div>
+          <div>
+            <div class="hp-section-title">➕ Dodaci<br><span style="font-size:12px; color:var(--gray);">sve uključeno</span></div>
+            <ul class="hp-items">
+              <li>Viralni izazovi</li>
+              <li>YouTube produkcija</li>
+              <li>Video iz kladionice</li>
+              <li>Brendiranje kanala</li>
+              <li>Giveaway organizacija</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Navigation -->
+<nav class="nav">
+  <button class="nav-btn" id="prevBtn">←</button>
+  <div class="progress-dots" id="dots"></div>
+  <div class="slide-counter" id="counter">1 / 16</div>
+  <button class="nav-btn" id="nextBtn">→</button>
+</nav>
+
+<script>
+  // Custom cursor only on desktop (saves work on touch devices)
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+      setTimeout(() => {
+        ring.style.left = e.clientX + 'px';
+        ring.style.top = e.clientY + 'px';
+      }, 80);
+    });
+  }
+
+  // Slides
+  const slideIds = ['s1','s2','s3','s4','s5','s6','s7','s8','s16','s9','s10','s14','s13','s17','s18','s20','s21'];
+  const slides = slideIds.map(id => document.getElementById(id));
+  let current = 0;
+
+  // Dots
+  const dotsEl = document.getElementById('dots');
+  slideIds.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.addEventListener('click', () => goTo(i));
+    dotsEl.appendChild(d);
+  });
+
+  function goTo(n) {
+    slides[current].classList.remove('active');
+    dotsEl.children[current].classList.remove('active');
+    current = (n + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    dotsEl.children[current].classList.add('active');
+    document.getElementById('counter').textContent = (current + 1) + ' / ' + slides.length;
+  }
+
+  document.getElementById('nextBtn').addEventListener('click', () => goTo(current + 1));
+  document.getElementById('prevBtn').addEventListener('click', () => goTo(current - 1));
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') goTo(current + 1);
+    if (e.key === 'ArrowLeft') goTo(current - 1);
+  });
+
+  // Touch/swipe
+  let startX = 0;
+  document.addEventListener('touchstart', e => startX = e.touches[0].clientX);
+  document.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - startX;
+    if (dx < -50) goTo(current + 1);
+    if (dx > 50) goTo(current - 1);
+  });
+
+</script>
+</body>
+</html>
