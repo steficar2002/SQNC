@@ -1,0 +1,4 @@
+# Netlify – static presentation (no build)
+[build]
+  publish = "."
+  command = ""
