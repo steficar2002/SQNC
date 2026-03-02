@@ -469,6 +469,7 @@
   .problem-text strong {
     font-weight: 700;
     color: var(--white);
+    text-transform: uppercase;
   }
   .problem-item.solution-card .problem-icon {
     background: none;
@@ -1124,6 +1125,30 @@
     width: 2px;
     height: 30px;
     background: rgba(255,255,255,0.15);
+  }
+  .org-report-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: rgba(34,197,94,0.08);
+    border: 1px solid rgba(34,197,94,0.35);
+    border-radius: 10px;
+  }
+  .org-report-icons {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--green);
+    font-size: 18px;
+  }
+  .org-report-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--green);
   }
   .org-tim-frame {
     border: 2px solid rgba(255,255,255,0.2);
@@ -1885,11 +1910,11 @@
       <h2><span>INFLUENSERI</span></h2>
       <div class="red-line"></div>
       <div class="problem-list">
-        <div class="problem-item"><div class="problem-icon"><i class="fa-solid fa-bolt"></i></div><div class="problem-text"><strong>Loša organizacija</strong> — Neispoštovani rokovi, nekoordinisan sadržaj, propuštene prilike</div></div>
-        <div class="problem-item"><div class="problem-icon"><i class="fa-solid fa-bomb"></i></div><div class="problem-text"><strong>Veliki ego</strong> — Otežana komunikacija, nesaradnja po brend uputstvima</div></div>
-        <div class="problem-item"><div class="problem-icon"><i class="fa-solid fa-chart-column"></i></div><div class="problem-text"><strong>Protive se izveštavanju</strong> — Bez podataka, bez uvida u stvarni doseg i rezultate</div></div>
-        <div class="problem-item"><div class="problem-icon"><i class="fa-solid fa-shuffle"></i></div><div class="problem-text"><strong>Previše saradnji istovremeno</strong> — Vaš brend gubi fokus, diluje se poruka</div></div>
-        <div class="problem-item"><div class="problem-icon"><i class="fa-solid fa-clock"></i></div><div class="problem-text"><strong>Kratkoročna orijentacija</strong> — Fokus na jednokratne isplate, bez izgradnje zajednice</div></div>
+        <div class="problem-item"><div class="problem-icon"><i class="fa-solid fa-bolt"></i></div><div class="problem-text"><strong>Loša organizacija</strong></div></div>
+        <div class="problem-item"><div class="problem-icon"><i class="fa-solid fa-bomb"></i></div><div class="problem-text"><strong>Veliki ego</strong></div></div>
+        <div class="problem-item"><div class="problem-icon"><i class="fa-solid fa-chart-column"></i></div><div class="problem-text"><strong>Protive se izveštavanju</strong></div></div>
+        <div class="problem-item"><div class="problem-icon"><i class="fa-solid fa-shuffle"></i></div><div class="problem-text"><strong>Previše saradnji istovremeno</strong></div></div>
+        <div class="problem-item"><div class="problem-icon"><i class="fa-solid fa-clock"></i></div><div class="problem-text"><strong>Kratkoročna orijentacija</strong></div></div>
       </div>
     </div>
   </div>
@@ -2169,6 +2194,15 @@
 
       <div class="org-chart">
         <div class="org-top">Koordinator</div>
+        <div class="org-line"></div>
+
+        <div class="org-report-block">
+          <div class="org-report-icons">
+            <i class="fa-solid fa-chart-simple" aria-hidden="true"></i>
+            <i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i>
+          </div>
+          <div class="org-report-label">IZVEŠTAVANJE</div>
+        </div>
         <div class="org-line"></div>
 
         <div class="org-tim-frame">
