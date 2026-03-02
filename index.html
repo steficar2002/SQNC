@@ -39,7 +39,7 @@
     .cursor, .cursor-ring { display: none !important; }
   }
   @media (hover: hover) and (pointer: fine) {
-    body { cursor: none; }
+    * { cursor: none !important; }
   }
 
   .cursor {
@@ -114,6 +114,34 @@
     display: block;
   }
 
+  /* Mobile blocker – poruka da se koristi računar / veći ekran */
+  .mobile-blocker {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    color: #fff;
+    z-index: 200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+    text-align: center;
+  }
+  .mobile-blocker-inner {
+    max-width: 420px;
+  }
+  .mobile-blocker-inner h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+  }
+  .mobile-blocker-inner p {
+    font-size: 14px;
+    color: var(--gray);
+    line-height: 1.6;
+  }
+
   /* NAV */
   .nav {
     position: fixed;
@@ -135,7 +163,6 @@
     background: none;
     border: none;
     color: var(--white);
-    cursor: pointer;
     font-size: 20px;
     opacity: 0.6;
     transition: opacity 0.2s;
@@ -160,7 +187,6 @@
     border-radius: 50%;
     background: rgba(255,255,255,0.2);
     transition: all 0.3s;
-    cursor: pointer;
   }
   .dot.active {
     background: var(--red);
@@ -267,15 +293,12 @@
     to { opacity: 1; }
   }
 
-  /* SLIDE 2 – Statistika */
+  /* SLIDE 2 – Statistika (sadržaj centriran) */
   #s2 {
     background: var(--dark);
-    flex-direction: row;
-    align-items: stretch;
   }
   #s2 .left-panel {
-    flex: 1;
-    min-width: 0;
+    width: 100%;
     padding: 60px;
     display: flex;
     flex-direction: column;
@@ -286,17 +309,8 @@
   }
   #s2 .left-panel-inner {
     width: 100%;
-    max-width: 400px;
-    text-align: left;
-  }
-  #s2 .right-panel {
-    width: 42%;
-    background: var(--dark2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
+    max-width: 480px;
+    text-align: center;
   }
   #s2 .section-label {
     font-family: 'Space Mono', monospace;
@@ -308,7 +322,7 @@
   }
   #s2 h2 {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(36px, 5vw, 56px);
+    font-size: clamp(44px, 6.5vw, 72px);
     line-height: 0.95;
     margin-bottom: 24px;
   }
@@ -320,13 +334,13 @@
   }
   #s2 .big-number {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 80px;
+    font-size: 120px;
     line-height: 0.85;
     color: var(--red);
   }
   #s2 .big-unit {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 40px;
+    font-size: 56px;
     color: rgba(255,255,255,0.3);
     margin-bottom: 8px;
   }
@@ -451,6 +465,10 @@
     flex-shrink: 0;
     color: var(--red);
     font-size: 14px;
+  }
+  .problem-text strong {
+    font-weight: 700;
+    color: var(--white);
   }
   .problem-item.solution-card .problem-icon {
     background: none;
@@ -747,9 +765,10 @@
   .benefit-icon { font-size: 24px; margin-bottom: 8px; }
   .benefit-title {
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--white);
     margin-bottom: 4px;
+    text-transform: uppercase;
   }
   .benefit-desc {
     font-size: 11px;
@@ -792,7 +811,6 @@
     border: 1px solid rgba(255,255,255,0.06);
     text-align: center;
     transition: all 0.3s;
-    cursor: pointer;
     position: relative;
     overflow: hidden;
   }
@@ -1551,7 +1569,7 @@
   }
   .pricing-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(3, 1fr);
     gap: 24px;
   }
   .pricing-card {
@@ -1572,16 +1590,8 @@
     background: linear-gradient(135deg, var(--dark3), #1a1500);
   }
   .pricing-card.featured::before {
-    content: '⭐ PREPORUČENO';
-    position: absolute;
-    top: 16px; right: 16px;
-    background: var(--gold);
-    color: var(--black);
-    font-size: 9px;
-    font-weight: 700;
-    padding: 4px 10px;
-    border-radius: 100px;
-    letter-spacing: 1px;
+    content: none;
+    display: none;
   }
   .pkg-name {
     font-family: 'Bebas Neue', sans-serif;
@@ -1596,7 +1606,14 @@
     margin-bottom: 24px;
     color: var(--red);
   }
+  .pkg-subtitle {
+    font-size: 12px;
+    color: var(--gray);
+    margin-top: -16px;
+    margin-bottom: 24px;
+  }
   .pricing-card.featured .pkg-price { color: var(--gold); }
+  .pricing-card-volcano { border-color: rgba(232,0,45,0.25); }
   .pkg-divider {
     height: 1px;
     background: rgba(255,255,255,0.06);
@@ -1760,7 +1777,7 @@
   }
   /* Responsive adjustments */
   @media (max-width: 900px) {
-    #s2, #s8, #s9 { flex-direction: column; }
+    #s8, #s9 { flex-direction: column; }
     .tools-grid { grid-template-columns: repeat(2, 1fr); }
     .pricing-grid { grid-template-columns: 1fr; }
     #s17 .content, #s18 .content { grid-template-columns: 1fr; }
@@ -1771,8 +1788,9 @@
     #s1 .bottom-bar { padding: 0 20px; bottom: 100px; font-size: 9px; }
     #s2 .left-panel { padding: 32px 24px; }
     #s2 .left-panel-inner { max-width: 340px; }
-    #s2 .big-number { font-size: 64px; }
-    #s2 .right-panel { width: 100%; min-height: 280px; }
+    #s2 .big-number { font-size: 88px; }
+#s2 .big-unit { font-size: 40px; }
+#s2 h2 { font-size: clamp(38px, 5.5vw, 56px); }
     .phone-mockup { width: 200px; height: 385px; }
     .flow-wrapper, #s3 .content, #s6 .content, #s7 .content,
     #s8 .content, #s9 .content, #s10 .content, #s13 .content,
@@ -1791,6 +1809,13 @@
     .screenshot-grid { grid-template-columns: repeat(2, 1fr); }
     .volcano-logo { top: 16px; right: 16px; }
     .volcano-logo img { height: 28px; }
+
+    /* Blokiraj prezentaciju na mobilnom – samo poruka */
+    .mobile-blocker { display: flex; }
+    .slides-wrapper,
+    .nav,
+    #cursor,
+    #cursorRing { display: none !important; }
   }
 
   @media (max-width: 480px) {
@@ -1808,6 +1833,13 @@
 
 <div class="volcano-logo">
   <img src="logo%20volcano.webp" alt="Volcano Bet"/>
+</div>
+
+<div class="mobile-blocker">
+  <div class="mobile-blocker-inner">
+    <h2>Molimo vas</h2>
+    <p>Ova prezentacija je optimizovana za veće ekrane. Molim vas uđite preko računara ili većeg monitora.</p>
+  </div>
 </div>
 
 <div class="slides-wrapper">
@@ -1844,18 +1876,6 @@
         <div class="stat-desc">Prosečna osoba u Srbiji dnevno provede oko <strong>217 minuta</strong> na društvenim mrežama — svaki igrač je već tamo.</div>
       </div>
     </div>
-    <div class="right-panel">
-      <div class="phone-mockup">
-        <div class="phone-screen">
-          <div class="phone-icons">
-            <div class="phone-icon kick">KICK</div>
-            <div class="phone-icon ig">📸</div>
-            <div class="phone-icon tiktok">♪</div>
-            <div class="phone-icon more">⋯</div>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 
   <!-- SLIDE 3 -->
@@ -1865,15 +1885,11 @@
       <h2><span>INFLUENSERI</span></h2>
       <div class="red-line"></div>
       <div class="problem-list">
-        <div class="problem-item"><div class="problem-icon">⚡</div><div class="problem-text"><strong>Loša organizacija</strong> — Neispoštovani rokovi, nekoordinisan sadržaj, propuštene prilike</div></div>
-        <div class="problem-item"><div class="problem-icon">💣</div><div class="problem-text"><strong>Veliki ego</strong> — Otežana komunikacija, nesaradnja po brend uputstvima</div></div>
-        <div class="problem-item"><div class="problem-icon">📊</div><div class="problem-text"><strong>Protive se izveštavanju</strong> — Bez podataka, bez uvida u stvarni doseg i rezultate</div></div>
-        <div class="problem-item"><div class="problem-icon">🔀</div><div class="problem-text"><strong>Previše saradnji istovremeno</strong> — Vaš brend gubi fokus, diluje se poruka</div></div>
-        <div class="problem-item"><div class="problem-icon">⏱</div><div class="problem-text"><strong>Kratkoročna orijentacija</strong> — Fokus na jednokratne isplate, bez izgradnje zajednice</div></div>
-        <div class="problem-item solution-card">
-          <div class="problem-icon"><i class="fa-solid fa-check"></i></div>
-          <div class="problem-text"><strong style="color: var(--white);">Sequence rešava sve ovo</strong> — ključ u ruke sistem sa punom kontrolom i izveštavanjem</div>
-        </div>
+        <div class="problem-item"><div class="problem-icon"><i class="fa-solid fa-bolt"></i></div><div class="problem-text"><strong>Loša organizacija</strong> — Neispoštovani rokovi, nekoordinisan sadržaj, propuštene prilike</div></div>
+        <div class="problem-item"><div class="problem-icon"><i class="fa-solid fa-bomb"></i></div><div class="problem-text"><strong>Veliki ego</strong> — Otežana komunikacija, nesaradnja po brend uputstvima</div></div>
+        <div class="problem-item"><div class="problem-icon"><i class="fa-solid fa-chart-column"></i></div><div class="problem-text"><strong>Protive se izveštavanju</strong> — Bez podataka, bez uvida u stvarni doseg i rezultate</div></div>
+        <div class="problem-item"><div class="problem-icon"><i class="fa-solid fa-shuffle"></i></div><div class="problem-text"><strong>Previše saradnji istovremeno</strong> — Vaš brend gubi fokus, diluje se poruka</div></div>
+        <div class="problem-item"><div class="problem-icon"><i class="fa-solid fa-clock"></i></div><div class="problem-text"><strong>Kratkoročna orijentacija</strong> — Fokus na jednokratne isplate, bez izgradnje zajednice</div></div>
       </div>
     </div>
   </div>
@@ -1960,7 +1976,7 @@
         <div class="section-label" style="font-family:'Space Mono',monospace; color:var(--red); margin-bottom:12px;">Naše rešenje</div>
         <h2>Ključ u<br><span>ruke</span><br>sistem</h2>
         <div class="red-line"></div>
-        <p>Sve što vam treba za dominaciju na balkanskon tržištu — organizovano, izmerljivo i skalabilno.</p>
+        <p>Sve što vam treba za dominaciju na balkanskom tržištu.</p>
       </div>
       <div class="benefit-grid">
         <div class="benefit-card">
@@ -2371,55 +2387,34 @@
             <li>Video iz kladionice</li>
           </ul>
         </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- SLIDE 21 – Volcano Package -->
-  <div class="slide" id="s21">
-    <div class="content slide-inner">
-      <div style="font-family:'Space Mono',monospace; font-size:12px; color:var(--red); letter-spacing:4px; margin-bottom:20px;">Premium ponuda</div>
-      <div class="hero-package">
-        <div class="hp-header">
-          <div class="hp-title-group">
-            <div class="hp-eyebrow">× EKSKLUZIVNO ×</div>
-            <div class="hp-name">VOLCANO<br><span>PACKAGE</span></div>
-          </div>
-          <div class="hp-price">
-            12.000€
-            <span>mesečno · sve uključeno</span>
-          </div>
-        </div>
-        <div class="hp-body">
-          <div>
-            <div class="hp-section-title">📸 Instagram<br><span style="font-size:12px; color:var(--gray);">500k+ doseg</span></div>
-            <ul class="hp-items">
-              <li>@serbiangamesbl_yt (471k)</li>
-              <li>@kockarinjo</li>
-              <li>@prokockan</li>
-              <li>@sportske zanimljivosti</li>
-              <li>@borillačke zanimljivosti</li>
-            </ul>
-          </div>
-          <div>
-            <div class="hp-section-title">🟢 Kick Streaming<br><span style="font-size:12px; color:var(--gray);">40h+</span></div>
-            <ul class="hp-items">
-              <li>Brendirani kanal</li>
-              <li>SerbianGames stream</li>
-              <li>Dodatni kanali</li>
-              <li>40h+ ukupno mesečno</li>
-            </ul>
-          </div>
-          <div>
-            <div class="hp-section-title">➕ Dodaci<br><span style="font-size:12px; color:var(--gray);">sve uključeno</span></div>
-            <ul class="hp-items">
-              <li>Viralni izazovi</li>
-              <li>YouTube produkcija</li>
-              <li>Video iz kladionice</li>
-              <li>Brendiranje kanala</li>
-              <li>Giveaway organizacija</li>
-            </ul>
-          </div>
+        <div class="pricing-card pricing-card-volcano">
+          <div class="pkg-name">Volcano Package</div>
+          <div class="pkg-price">12.000€</div>
+          <div class="pkg-subtitle">mesečno · sve uključeno</div>
+          <div class="pkg-divider"></div>
+          <div class="pkg-section-title">Instagram</div>
+          <ul class="pkg-items">
+            <li>@serbiangamesbl_yt (471k)</li>
+            <li>@kockarinjo</li>
+            <li>@prokockan</li>
+            <li>@sportske zanimljivosti</li>
+            <li>@borillačke zanimljivosti</li>
+          </ul>
+          <div class="pkg-section-title">Kick Streaming</div>
+          <ul class="pkg-items">
+            <li>Brendirani kanal</li>
+            <li>SerbianGames stream</li>
+            <li>Dodatni kanali</li>
+            <li>40h+ ukupno mesečno</li>
+          </ul>
+          <div class="pkg-section-title">Dodatno</div>
+          <ul class="pkg-items">
+            <li>Viralni izazovi</li>
+            <li>YouTube produkcija</li>
+            <li>Video iz kladionice</li>
+            <li>Brendiranje kanala</li>
+            <li>Giveaway organizacija</li>
+          </ul>
         </div>
       </div>
     </div>
@@ -2451,7 +2446,7 @@
   }
 
   // Slides
-  const slideIds = ['s1','s2','s3','s4','s5','s6','s7','s8','s16','s9','s10','s14','s13','s17','s18','s20','s21'];
+  const slideIds = ['s1','s2','s3','s4','s5','s6','s7','s8','s16','s10','s9','s14','s13','s17','s18','s20'];
   const slides = slideIds.map(id => document.getElementById(id));
   let current = 0;
 
