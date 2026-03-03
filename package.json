@@ -4,7 +4,7 @@
   "description": "Presentation website — Sequence × Volcano Bet (mobile & desktop)",
   "private": true,
   "scripts": {
-    "start": "npx live-server --port=3000 --watch=.",
+    "start": "npx live-server --port=3000 --watch=. --wait=200",
     "preview": "npx serve . -l 3000"
   }
 }

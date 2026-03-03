@@ -28,6 +28,7 @@
     background: var(--black);
     color: var(--white);
     overflow: hidden;
+    overflow-x: hidden;
     height: 100vh;
     width: 100vw;
     -webkit-tap-highlight-color: transparent;
@@ -70,6 +71,7 @@
     position: relative;
     transform: scale(1.2);
     transform-origin: center center;
+    overflow: hidden;
   }
 
   .slide {
@@ -256,6 +258,9 @@
     white-space: nowrap;
     margin-top: 0.05em;
   }
+  @media (max-width: 1200px) {
+    #s1 h1 .hero-line { white-space: normal; }
+  }
   #s1 h1 .hero-line .hero-highlight {
     display: inline;
     color: var(--gold);
@@ -274,9 +279,9 @@
     left: 0; right: 0;
     display: flex;
     justify-content: space-between;
-    padding: 0 60px;
+    padding: 0 clamp(16px, 4vw, 60px);
     font-family: 'Space Mono', monospace;
-    font-size: 11px;
+    font-size: clamp(9px, 1.2vw, 11px);
     color: rgba(255,255,255,0.2);
     letter-spacing: 2px;
     z-index: 2;
@@ -763,7 +768,19 @@
     transition: transform 0.3s;
   }
   .benefit-card:hover::before { transform: scaleX(1); }
-  .benefit-icon { font-size: 24px; margin-bottom: 8px; }
+  .benefit-icon {
+    width: 28px;
+    height: 28px;
+    margin-bottom: 8px;
+    color: var(--red);
+    flex-shrink: 0;
+  }
+  .benefit-icon svg {
+    width: 100%;
+    height: 100%;
+    stroke-width: 2;
+  }
+  .benefit-card--green .benefit-icon { color: var(--green); }
   .benefit-title {
     font-size: 12px;
     font-weight: 700;
@@ -832,7 +849,21 @@
   .tool-emoji {
     font-size: 40px;
     margin-bottom: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 48px; /* fixed height so titles align */
+  }
+  .tool-emoji img {
     display: block;
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+  }
+  .tool-emoji.multi img {
+    width: 26px;
+    height: 26px;
   }
   .tool-name {
     font-family: 'Bebas Neue', sans-serif;
@@ -1073,38 +1104,42 @@
   }
   .screenshot-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 16px;
+    justify-items: center;
   }
   .screenshot-placeholder {
-    aspect-ratio: 9/16;
-    background: var(--dark2);
-    border-radius: 12px;
-    border: 1px dashed rgba(255,255,255,0.12);
+    padding: 0;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    color: rgba(255,255,255,0.2);
-    font-size: 11px;
-    font-family: 'Space Mono', monospace;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 4px;
+  }
+  .screenshot-placeholder img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 8px;
+  }
+  .screenshot-placeholder img + img {
+    margin-top: 4px;
   }
   .screenshot-placeholder .icon { font-size: 28px; opacity: 0.3; }
 
-  /* SLIDE 13 – Tim struktura */
+  /* SLIDE 13 – Tim struktura (Koordinator) – compact to clear bottom nav */
   #s13 {
     background: var(--dark);
   }
   #s13 .content {
     position: relative; z-index: 2;
     width: 100%; max-width: 1100px;
-    padding: 60px;
+    padding: 32px 60px 100px;
   }
   #s13 h2 {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 72px;
-    margin-bottom: 48px;
+    margin-bottom: 24px;
   }
   #s13 h2 span { color: var(--red); }
   .org-chart {
@@ -1112,48 +1147,50 @@
     flex-direction: column;
     align-items: center;
     gap: 0;
+    transform: scale(0.88);
+    transform-origin: top center;
   }
   .org-top {
     background: var(--red);
-    padding: 12px 32px;
-    border-radius: 8px;
+    padding: 8px 24px;
+    border-radius: 6px;
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 20px;
+    font-size: 18px;
     letter-spacing: 2px;
   }
   .org-line {
     width: 2px;
-    height: 30px;
+    height: 20px;
     background: rgba(255,255,255,0.15);
   }
   .org-report-block {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
-    padding: 12px 24px;
+    gap: 6px;
+    padding: 10px 20px;
     background: rgba(34,197,94,0.08);
     border: 1px solid rgba(34,197,94,0.35);
-    border-radius: 10px;
+    border-radius: 8px;
   }
   .org-report-icons {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     color: var(--green);
-    font-size: 18px;
+    font-size: 16px;
   }
   .org-report-label {
     font-family: 'Space Mono', monospace;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 700;
     letter-spacing: 3px;
     color: var(--green);
   }
   .org-tim-frame {
     border: 2px solid rgba(255,255,255,0.2);
-    border-radius: 12px;
-    padding: 20px 28px;
+    border-radius: 10px;
+    padding: 14px 22px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1162,14 +1199,14 @@
   }
   .org-tim-label {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 20px;
+    font-size: 18px;
     letter-spacing: 2px;
     color: var(--gray);
     font-weight: 700;
   }
   .org-row {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     align-items: flex-start;
     justify-content: center;
   }
@@ -1182,9 +1219,9 @@
   .org-node {
     background: var(--dark3);
     border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 8px;
-    padding: 10px 16px;
-    font-size: 12px;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 11px;
     font-weight: 600;
     text-align: center;
     white-space: nowrap;
@@ -1192,15 +1229,15 @@
   .org-node.team { background: rgba(232,0,45,0.1); border-color: rgba(232,0,45,0.3); }
   .org-subrow {
     display: flex;
-    gap: 8px;
+    gap: 6px;
     margin-top: 0;
   }
   .org-sub {
     background: var(--dark3);
     border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 8px;
-    padding: 8px 12px;
-    font-size: 11px;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 10px;
     color: var(--gray);
     text-align: center;
     white-space: nowrap;
@@ -1209,30 +1246,30 @@
     height: 2px;
     background: rgba(255,255,255,0.08);
     width: 100%;
-    margin: 16px 0;
+    margin: 10px 0;
   }
   .org-section {
     background: var(--dark3);
-    border-radius: 12px;
-    padding: 16px 20px;
-    min-width: 160px;
+    border-radius: 10px;
+    padding: 12px 16px;
+    min-width: 140px;
     text-align: center;
     border: 1px solid rgba(255,255,255,0.08);
   }
   .org-section-title {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 16px;
+    font-size: 14px;
     letter-spacing: 1px;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     color: var(--red);
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 6px;
   }
   .org-section-title .org-logo {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     flex-shrink: 0;
     display: inline-block;
     vertical-align: middle;
@@ -1245,9 +1282,9 @@
     color: var(--red);
   }
   .org-section-items {
-    font-size: 11px;
+    font-size: 10px;
     color: var(--gray);
-    line-height: 1.8;
+    line-height: 1.6;
   }
 
   /* SLIDE 14 – Tim cards */
@@ -1257,7 +1294,7 @@
   #s14 .content {
     position: relative; z-index: 2;
     width: 100%; max-width: 1000px;
-    padding: 60px;
+    padding: 32px 60px 96px;
   }
   #s14 .section-label {
     font-family: 'Space Mono', monospace;
@@ -1273,14 +1310,15 @@
   }
   .team-cards {
     display: grid;
-    grid-template-columns: repeat(5, minmax(200px, 1fr));
+    grid-template-columns: repeat(3, minmax(200px, 1fr));
     gap: 20px;
-    max-width: 1400px;
+    max-width: 820px;
     margin: 0 auto;
+    justify-content: center;
   }
   .team-card {
     background: var(--dark2);
-    border-radius: 16px;
+    border-radius: 14px;
     overflow: hidden;
     border: 1px solid rgba(255,255,255,0.06);
     transition: transform 0.3s, border-color 0.3s;
@@ -1291,7 +1329,7 @@
   }
   .team-avatar {
     width: 100%;
-    aspect-ratio: 1;
+    aspect-ratio: 4 / 5;
     background: var(--dark3);
     display: flex;
     align-items: center;
@@ -1329,21 +1367,21 @@
     display: none;
   }
   .team-info {
-    padding: 20px;
+    padding: 14px 16px 16px;
   }
   .team-name {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 24px;
-    margin-bottom: 4px;
+    font-size: 22px;
+    margin-bottom: 2px;
   }
   .team-role {
-    font-size: 12px;
+    font-size: 11px;
     color: var(--red);
     margin-bottom: 12px;
     font-weight: 500;
   }
   .team-desc {
-    font-size: 12px;
+    font-size: 11px;
     color: var(--gray);
     line-height: 1.6;
   }
@@ -1451,11 +1489,38 @@
   .kick-body {
     flex: 1;
     background: var(--dark);
+    position: relative;
+    overflow: hidden;
+  }
+  .kick-body img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .kick-play-overlay {
+    position: absolute;
+    inset: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: rgba(255,255,255,0.1);
-    font-size: 40px;
+    pointer-events: none;
+  }
+  .kick-play-button {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid rgba(255,255,255,0.8);
+  }
+  .kick-play-button span {
+    display: block;
+    margin-left: 3px;
+    font-size: 26px;
+    color: #ffffff;
   }
   .kick-footer {
     background: var(--dark3);
@@ -1578,29 +1643,30 @@
   #s20 .content {
     position: relative; z-index: 2;
     width: 100%; max-width: 1100px;
-    padding: 60px;
+    padding: 32px 60px 40px;
   }
   #s20 .section-label {
     font-family: 'Space Mono', monospace;
     font-size: 12px;
     color: var(--red);
     letter-spacing: 4px;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
   }
   #s20 h2 {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 72px;
-    margin-bottom: 40px;
+    margin-bottom: 24px;
   }
   .pricing-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
+    gap: 20px;
+    align-items: start;
   }
   .pricing-card {
     background: var(--dark3);
-    border-radius: 20px;
-    padding: 36px;
+    border-radius: 16px;
+    padding: 24px 28px;
     border: 1px solid rgba(255,255,255,0.07);
     position: relative;
     overflow: hidden;
@@ -1620,29 +1686,29 @@
   }
   .pkg-name {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 28px;
+    font-size: 24px;
     letter-spacing: 2px;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
   }
   .pkg-price {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 56px;
+    font-size: 48px;
     line-height: 1;
-    margin-bottom: 24px;
+    margin-bottom: 12px;
     color: var(--red);
   }
   .pkg-subtitle {
-    font-size: 12px;
+    font-size: 11px;
     color: var(--gray);
-    margin-top: -16px;
-    margin-bottom: 24px;
+    margin-top: -10px;
+    margin-bottom: 12px;
   }
   .pricing-card.featured .pkg-price { color: var(--gold); }
   .pricing-card-volcano { border-color: rgba(232,0,45,0.25); }
   .pkg-divider {
     height: 1px;
     background: rgba(255,255,255,0.06);
-    margin-bottom: 20px;
+    margin-bottom: 12px;
   }
   .pkg-section-title {
     font-family: 'Space Mono', monospace;
@@ -1650,22 +1716,22 @@
     color: var(--gray);
     letter-spacing: 3px;
     text-transform: uppercase;
-    margin-bottom: 10px;
+    margin-bottom: 6px;
   }
   .pkg-items {
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    margin-bottom: 16px;
+    gap: 4px;
+    margin-bottom: 10px;
   }
   .pkg-items li {
-    font-size: 12px;
+    font-size: 11px;
     color: rgba(255,255,255,0.65);
     display: flex;
     align-items: flex-start;
-    gap: 8px;
-    line-height: 1.4;
+    gap: 6px;
+    line-height: 1.35;
   }
   .pkg-items li::before {
     content: '→';
@@ -1797,9 +1863,69 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
+  /* Smaller screens: scale down wrapper to prevent edge overflow */
+  @media (max-width: 1400px) {
+    .slides-wrapper { transform: scale(1.05); }
+  }
   @media (max-width: 1200px) {
+    .slides-wrapper { transform: scale(0.95); }
+    .volcano-logo { top: 16px; right: 16px; }
+    .volcano-logo img { height: 30px; }
+    #s2 .left-panel { padding: 40px 32px; }
+    #s2 .big-number { font-size: 96px; }
+    #s2 .big-unit { font-size: 44px; }
+    .flow-wrapper, #s3 .content, #s6 .content, #s7 .content,
+    #s8 .content, #s9 .content, #s10 .content, #s13 .content,
+    #s14 .content, #s16 .content, #s17 .content, #s18 .content,
+    #s20 .content, #s21 .content { padding: 40px 28px; }
+    #s13 .content { padding-bottom: 100px; }
+    #s3 h2, #s7 h2, #s13 h2, #s14 h2, #s20 h2 { font-size: 56px; }
+    .flow-title { font-size: 44px; margin-bottom: 40px; }
+    .step-num { width: 52px; height: 52px; font-size: 24px; }
+    .hp-header { padding: 32px 36px; }
+    .hp-name { font-size: 52px; }
+    .hp-price { font-size: 64px; }
+    .hp-body { padding: 32px 36px; gap: 24px; }
+    #s16 .content { padding: 40px 24px; }
+    #s16 .big-stat .num { font-size: clamp(64px, 12vw, 120px); }
+    .s16-stats { gap: 48px; }
     .team-cards { grid-template-columns: repeat(3, 1fr); }
   }
+  @media (max-width: 1024px) {
+    .slides-wrapper { transform: scale(0.88); }
+    .flow-wrapper, #s3 .content, #s6 .content, #s7 .content,
+    #s8 .content, #s9 .content, #s10 .content, #s13 .content,
+    #s14 .content, #s16 .content, #s17 .content, #s18 .content,
+    #s20 .content, #s21 .content { padding: 32px 20px; }
+    #s13 .content { padding-bottom: 100px; }
+    #s3 h2, #s7 h2, #s13 h2, #s14 h2, #s20 h2 { font-size: 48px; }
+    .flow-title { font-size: 38px; margin-bottom: 32px; }
+    .flow-steps { gap: 4px; }
+    .step-num { width: 48px; height: 48px; font-size: 22px; }
+    .step-label { font-size: 14px; }
+    .tools-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .tool-card { padding: 24px 18px; }
+    .benefit-grid { gap: 10px; }
+    .benefit-card { padding: 16px; }
+    .pricing-grid { gap: 18px; }
+    .pricing-card { padding: 28px 24px; }
+    .pkg-price { font-size: 48px; }
+    .hp-header { padding: 28px 28px; }
+    .hp-name { font-size: 44px; }
+    .hp-price { font-size: 56px; }
+    .hp-body { padding: 28px 28px; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .org-tim-frame { padding: 16px 20px; }
+    .org-node { padding: 8px 12px; font-size: 11px; }
+    .org-section { min-width: 120px; padding: 12px 14px; }
+    .org-section-title { font-size: 14px; }
+    .org-node, .org-sub { white-space: normal; }
+    .org-row { flex-wrap: wrap; justify-content: center; gap: 8px; }
+    .team-cards { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    #s8 h2, #s17 h2 { font-size: 48px; }
+    #s18 h2 { font-size: 44px; }
+    .s16-stats { gap: 40px; flex-wrap: wrap; }
+  }
+
   /* Responsive adjustments */
   @media (max-width: 900px) {
     #s8, #s9 { flex-direction: column; }
@@ -2005,32 +2131,32 @@
       </div>
       <div class="benefit-grid">
         <div class="benefit-card">
-          <div class="benefit-icon">📡</div>
+          <div class="benefit-icon" data-lucide="radio"></div>
           <div class="benefit-title">Sve platforme</div>
           <div class="benefit-desc">Pokrivenost na svim relevantnim mrežama istovremeno</div>
         </div>
         <div class="benefit-card">
-          <div class="benefit-icon">🎨</div>
+          <div class="benefit-icon" data-lucide="palette"></div>
           <div class="benefit-title">Brendirani sadržaj</div>
           <div class="benefit-desc">Konzistentan vizuelni identitet Volcano Bet brenda</div>
         </div>
         <div class="benefit-card">
-          <div class="benefit-icon">🎯</div>
+          <div class="benefit-icon" data-lucide="target"></div>
           <div class="benefit-title">Stalna prisutnost</div>
           <div class="benefit-desc">Konstantna vidljivost kod aktivnih igrača svakodnevno</div>
         </div>
         <div class="benefit-card">
-          <div class="benefit-icon">👥</div>
+          <div class="benefit-icon" data-lucide="users"></div>
           <div class="benefit-title">Zajednica</div>
           <div class="benefit-desc">Izgradnja i aktivacija lojalne baze pratilaca / igrača</div>
         </div>
         <div class="benefit-card">
-          <div class="benefit-icon">📊</div>
+          <div class="benefit-icon" data-lucide="bar-chart-2"></div>
           <div class="benefit-title">Nedeljni izveštaj</div>
           <div class="benefit-desc">Transparentni podaci o dosegu, angažmanu i rastu</div>
         </div>
         <div class="benefit-card benefit-card--green">
-          <div class="benefit-icon">🚀</div>
+          <div class="benefit-icon" data-lucide="rocket"></div>
           <div class="benefit-title">Maksimalan uticaj</div>
           <div class="benefit-desc">Rast brenda kroz dokazanu strategiju i mreže</div>
         </div>
@@ -2045,17 +2171,24 @@
       <h2>Šta koristimo</h2>
       <div class="tools-grid">
         <div class="tool-card">
-          <span class="tool-emoji">📸</span>
+          <span class="tool-emoji">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" alt="Instagram logo">
+          </span>
           <div class="tool-name">Instagram objave</div>
           <div class="tool-desc">Sport, kazino i meme profili sa kombinovanim dosegom 700k+</div>
         </div>
         <div class="tool-card">
-          <span class="tool-emoji" style="color:#53FC18">📺</span>
+          <span class="tool-emoji">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/69/Kick.com_icon_logo.svg" alt="Kick logo">
+          </span>
           <div class="tool-name">Kick Stream-eri</div>
           <div class="tool-desc">Live brendirani streamovi sa najgledanijim kanalima na Balkanu</div>
         </div>
         <div class="tool-card">
-          <span class="tool-emoji">✂️</span>
+          <span class="tool-emoji multi">
+            <img src="youtube-shorts.png" alt="YouTube Shorts logo">
+            <img src="tiktok-logo.png" alt="TikTok logo">
+          </span>
           <div class="tool-name">Kratak sadržaj</div>
           <div class="tool-desc">Reels, Shorts i TikTok klipovi za viralni doseg</div>
         </div>
@@ -2178,10 +2311,17 @@
       <div style="font-family:'Space Mono',monospace; font-size:12px; color:var(--red); letter-spacing:4px; margin-bottom:12px; text-align:left;">In-House profili</div>
       <h2 style="text-align:left;">Naši kanali</h2>
       <div class="screenshot-grid">
-        <div class="screenshot-placeholder"><div class="icon">📱</div><div>Instagram<br>Screenshot</div></div>
-        <div class="screenshot-placeholder"><div class="icon">📺</div><div>YouTube<br>Screenshot</div></div>
-        <div class="screenshot-placeholder"><div class="icon">🎮</div><div>Kick<br>Screenshot</div></div>
-        <div class="screenshot-placeholder"><div class="icon">📊</div><div>Analytics<br>Screenshot</div></div>
+        <div class="screenshot-placeholder">
+          <img src="kocka-1.png" alt="Kocka 1">
+          <img src="kocka-2.png" alt="Kocka 2">
+        </div>
+        <div class="screenshot-placeholder">
+          <img src="thumb-1.jpeg" alt="Thumbnail 1">
+          <img src="thumb-2.jpeg" alt="Thumbnail 2">
+        </div>
+        <div class="screenshot-placeholder">
+          <img src="kick-screenshot.png" alt="Kick screenshot">
+        </div>
       </div>
     </div>
   </div>
@@ -2252,7 +2392,6 @@
           <div class="team-info">
             <div class="team-name">Mateja Bulatović</div>
             <div class="team-role">Osnivač & CEO</div>
-            <div class="team-desc">Dodati opis, iskustvo i uloga u Sequence timu.</div>
           </div>
         </div>
         <div class="team-card">
@@ -2263,37 +2402,16 @@
           <div class="team-info">
             <div class="team-name">Stefan Mitrović</div>
             <div class="team-role">Head of Influencer</div>
-            <div class="team-desc">Dodati opis, iskustvo i uloga u Sequence timu.</div>
           </div>
         </div>
         <div class="team-card">
           <div class="team-avatar">
+            <img src="pavle-miljkovic.png" alt="Pavle Miljkovic"/>
             <div class="placeholder-text">Profilna slika<br>člana 3</div>
           </div>
           <div class="team-info">
-            <div class="team-name">Ime Prezime</div>
+            <div class="team-name">Pavle Miljkovic</div>
             <div class="team-role">Creative Director</div>
-            <div class="team-desc">Dodati opis, iskustvo i uloga u Sequence timu.</div>
-          </div>
-        </div>
-        <div class="team-card">
-          <div class="team-avatar">
-            <div class="placeholder-text">Profilna slika<br>člana 4</div>
-          </div>
-          <div class="team-info">
-            <div class="team-name">Ime Prezime</div>
-            <div class="team-role">Uloga</div>
-            <div class="team-desc">Dodati opis, iskustvo i uloga u Sequence timu.</div>
-          </div>
-        </div>
-        <div class="team-card">
-          <div class="team-avatar">
-            <div class="placeholder-text">Profilna slika<br>člana 5</div>
-          </div>
-          <div class="team-info">
-            <div class="team-name">Ime Prezime</div>
-            <div class="team-role">Uloga</div>
-            <div class="team-desc">Dodati opis, iskustvo i uloga u Sequence timu.</div>
           </div>
         </div>
       </div>
@@ -2304,7 +2422,7 @@
   <div class="slide" id="s16">
     <div class="content slide-inner" style="text-align:center; position:relative; z-index:2;">
       <div style="font-family:'Space Mono',monospace; font-size:12px; color:rgba(255,255,255,0.3); letter-spacing:4px; margin-bottom:40px;">Instagram mreža</div>
-      <div style="display:flex; gap:80px; justify-content:center; align-items:center;">
+      <div class="s16-stats" style="display:flex; gap:80px; justify-content:center; align-items:center;">
         <div class="big-stat">
           <div class="num">5+</div>
           <div class="label">Instagram profila</div>
@@ -2342,7 +2460,14 @@
           <div class="kick-live">● LIVE</div>
           <div style="font-size:11px; color:var(--gray); margin-left:auto;">@VolcanoBet</div>
         </div>
-        <div class="kick-body">🎰</div>
+        <div class="kick-body">
+          <img src="serbiangames-kick.png" alt="SerbianGamesBL Kick stream screenshot">
+          <div class="kick-play-overlay">
+            <div class="kick-play-button">
+              <span>▶</span>
+            </div>
+          </div>
+        </div>
         <div class="kick-footer">
           <div class="kick-viewers"><div class="viewer-dot"></div>2.847 gledalaca</div>
           <div style="font-size:10px; color:#53FC18; font-weight:600;">KOD: VOLCANO</div>
@@ -2464,7 +2589,11 @@
   <button class="nav-btn" id="nextBtn">→</button>
 </nav>
 
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <script>
+  // Lucide icons (e.g. slide 6 benefit cards)
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+
   // Custom cursor only on desktop (saves work on touch devices)
   const cursor = document.getElementById('cursor');
   const ring = document.getElementById('cursorRing');
