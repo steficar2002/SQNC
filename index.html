@@ -334,8 +334,8 @@
   #s2 .stat-block {
     display: flex;
     align-items: flex-end;
+    justify-content: center;
     gap: 4px;
-    margin-bottom: 8px;
   }
   #s2 .big-number {
     font-family: 'Bebas Neue', sans-serif;
@@ -996,7 +996,7 @@
     flex-shrink: 0;
   }
 
-  /* SLIDE 9 – Zasto mi */
+  /* SLIDE 9 – Zasto mi (samo levi deo, centrirano) */
   #s9 {
     background: var(--dark);
   }
@@ -1004,12 +1004,15 @@
     position: relative;
     z-index: 2;
     width: 100%;
-    max-width: 1100px;
+    max-width: 800px;
     padding: 60px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 60px;
-    align-items: start;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  #s9 .stats-showcase {
+    justify-content: center;
   }
   #s9 h2 {
     font-family: 'Bebas Neue', sans-serif;
@@ -1080,6 +1083,43 @@
     width: 12px;
     height: 12px;
     flex-shrink: 0;
+  }
+
+  /* SLIDE 11 – Naši benefiti (lista centrirana) */
+  #s11 {
+    background: var(--dark);
+  }
+  #s11 .content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 700px;
+    padding: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  #s11 .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--red);
+    letter-spacing: 4px;
+    margin-bottom: 12px;
+  }
+  #s11 h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px;
+    line-height: 0.9;
+    margin-bottom: 32px;
+  }
+  #s11 .credentials-list {
+    width: 100%;
+    align-items: center;
+  }
+  #s11 .cred-item {
+    max-width: 520px;
+    width: 100%;
   }
 
   /* SLIDE 10 – Screenshots placeholder */
@@ -1705,6 +1745,12 @@
   }
   .pricing-card.featured .pkg-price { color: var(--gold); }
   .pricing-card-volcano { border-color: rgba(232,0,45,0.25); }
+  .pricing-card-gray {
+    border-color: rgba(255,255,255,0.12);
+    background: var(--dark3);
+  }
+  .pricing-card-gray .pkg-price { color: var(--gray); }
+  .pricing-card-gray .pkg-items li::before { color: var(--gray); }
   .pkg-divider {
     height: 1px;
     background: rgba(255,255,255,0.06);
@@ -1875,7 +1921,7 @@
     #s2 .big-number { font-size: 96px; }
     #s2 .big-unit { font-size: 44px; }
     .flow-wrapper, #s3 .content, #s6 .content, #s7 .content,
-    #s8 .content, #s9 .content, #s10 .content, #s13 .content,
+    #s8 .content, #s9 .content, #s10 .content, #s11 .content, #s13 .content,
     #s14 .content, #s16 .content, #s17 .content, #s18 .content,
     #s20 .content, #s21 .content { padding: 40px 28px; }
     #s13 .content { padding-bottom: 100px; }
@@ -1894,7 +1940,7 @@
   @media (max-width: 1024px) {
     .slides-wrapper { transform: scale(0.88); }
     .flow-wrapper, #s3 .content, #s6 .content, #s7 .content,
-    #s8 .content, #s9 .content, #s10 .content, #s13 .content,
+    #s8 .content, #s9 .content, #s10 .content, #s11 .content, #s13 .content,
     #s14 .content, #s16 .content, #s17 .content, #s18 .content,
     #s20 .content, #s21 .content { padding: 32px 20px; }
     #s13 .content { padding-bottom: 100px; }
@@ -1928,7 +1974,7 @@
 
   /* Responsive adjustments */
   @media (max-width: 900px) {
-    #s8, #s9 { flex-direction: column; }
+    #s8, #s9, #s11 { flex-direction: column; }
     .tools-grid { grid-template-columns: repeat(2, 1fr); }
     .pricing-grid { grid-template-columns: 1fr; }
     #s17 .content, #s18 .content { grid-template-columns: 1fr; }
@@ -1944,7 +1990,7 @@
 #s2 h2 { font-size: clamp(38px, 5.5vw, 56px); }
     .phone-mockup { width: 200px; height: 385px; }
     .flow-wrapper, #s3 .content, #s6 .content, #s7 .content,
-    #s8 .content, #s9 .content, #s10 .content, #s13 .content,
+    #s8 .content, #s9 .content, #s10 .content, #s11 .content, #s13 .content,
     #s14 .content, #s20 .content, #s21 .content { padding: 32px 20px; }
     #s3 h2, #s7 h2, #s13 h2, #s14 h2, #s20 h2 { font-size: 48px; }
     #s6 .content { grid-template-columns: 1fr; gap: 32px; }
@@ -2024,7 +2070,6 @@
           <div class="big-number">217</div>
           <div class="big-unit">min</div>
         </div>
-        <div class="stat-desc">Prosečna osoba u Srbiji dnevno provede oko <strong>217 minuta</strong> na društvenim mrežama — svaki igrač je već tamo.</div>
       </div>
     </div>
   </div>
@@ -2041,6 +2086,7 @@
         <div class="problem-item"><div class="problem-icon"><i class="fa-solid fa-chart-column"></i></div><div class="problem-text"><strong>Protive se izveštavanju</strong></div></div>
         <div class="problem-item"><div class="problem-icon"><i class="fa-solid fa-shuffle"></i></div><div class="problem-text"><strong>Previše saradnji istovremeno</strong></div></div>
         <div class="problem-item"><div class="problem-icon"><i class="fa-solid fa-clock"></i></div><div class="problem-text"><strong>Kratkoročna orijentacija</strong></div></div>
+        <div class="problem-item"><div class="problem-icon"><i class="fa-solid fa-calendar-days"></i></div><div class="problem-text"><strong>Nepredvidivi rokovi</strong></div></div>
       </div>
     </div>
   </div>
@@ -2175,14 +2221,12 @@
             <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" alt="Instagram logo">
           </span>
           <div class="tool-name">Instagram objave</div>
-          <div class="tool-desc">Sport, kazino i meme profili sa kombinovanim dosegom 700k+</div>
         </div>
         <div class="tool-card">
           <span class="tool-emoji">
             <img src="https://upload.wikimedia.org/wikipedia/commons/6/69/Kick.com_icon_logo.svg" alt="Kick logo">
           </span>
           <div class="tool-name">Kick Stream-eri</div>
-          <div class="tool-desc">Live brendirani streamovi sa najgledanijim kanalima na Balkanu</div>
         </div>
         <div class="tool-card">
           <span class="tool-emoji multi">
@@ -2190,12 +2234,10 @@
             <img src="tiktok-logo.png" alt="TikTok logo">
           </span>
           <div class="tool-name">Kratak sadržaj</div>
-          <div class="tool-desc">Reels, Shorts i TikTok klipovi za viralni doseg</div>
         </div>
         <div class="tool-card">
           <span class="tool-emoji">🏆</span>
           <div class="tool-name">Izazovi i darivanja</div>
-          <div class="tool-desc">Giveaway i challenge formati koji privlače nove igrače</div>
         </div>
       </div>
     </div>
@@ -2278,20 +2320,25 @@
     </div>
   </div>
 
-  <!-- SLIDE 9 -->
+  <!-- SLIDE 9 – Zašto mi (samo 4 kartice, centrirano) -->
   <div class="slide" id="s9">
     <div class="content slide-inner">
-      <div>
-        <div style="font-family:'Space Mono',monospace; font-size:12px; color:var(--red); letter-spacing:4px; margin-bottom:12px;">O nama</div>
-        <h2>Zašto<br><span>mi?</span></h2>
-        <p class="intro">Decenija iskustva u gaming i kockarničkoj industriji, izgrađena mreža, provereni rezultati.</p>
-        <div class="stats-showcase" style="margin-top: 24px;">
-          <div class="showcase-stat"><div class="num">30+</div><div class="desc">Ljudi u timu</div></div>
-          <div class="showcase-stat"><div class="num">6+</div><div class="desc">Godina u radu sa influenserima</div></div>
-          <div class="showcase-stat"><div class="num">9M</div><div class="desc">Pratilaca na in-house brendu</div></div>
-          <div class="showcase-stat"><div class="num">100+</div><div class="desc">YouTube kanala u saradnji</div></div>
-        </div>
+      <div class="section-label" style="font-family:'Space Mono',monospace; font-size:12px; color:var(--red); letter-spacing:4px; margin-bottom:12px;">O nama</div>
+      <h2>Zašto<br><span>mi?</span></h2>
+      <p class="intro">Decenija iskustva u gaming i kockarničkoj industriji, izgrađena mreža, provereni rezultati.</p>
+      <div class="stats-showcase" style="margin-top: 24px;">
+        <div class="showcase-stat"><div class="num">30+</div><div class="desc">Ljudi u timu</div></div>
+        <div class="showcase-stat"><div class="num">6+</div><div class="desc">Godina u radu sa influenserima</div></div>
+        <div class="showcase-stat"><div class="num">9M</div><div class="desc">Pratilaca na in-house brendu</div></div>
+        <div class="showcase-stat"><div class="num">100+</div><div class="desc">YouTube kanala u saradnji</div></div>
       </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 11 – Naši benefiti (lista centrirana) -->
+  <div class="slide" id="s11">
+    <div class="content slide-inner">
+      <h2>Naši benefiti</h2>
       <div class="credentials-list">
         <div class="cred-item"><div class="cred-check"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17 4 12"/></svg></div>Mreža influensera iz branše</div>
         <div class="cred-item"><div class="cred-check"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17 4 12"/></svg></div>Saradnja sa 100+ YouTube kanala</div>
@@ -2508,7 +2555,7 @@
       <div class="section-label">Cenovnik</div>
       <h2>Paketi</h2>
       <div class="pricing-grid">
-        <div class="pricing-card">
+        <div class="pricing-card pricing-card-gray">
           <div class="pkg-name">Starter Pack</div>
           <div class="pkg-price">4.200€</div>
           <div class="pkg-divider"></div>
@@ -2527,7 +2574,7 @@
             <li>Viralni izazovi</li>
           </ul>
         </div>
-        <div class="pricing-card featured">
+        <div class="pricing-card pricing-card-volcano">
           <div class="pkg-name">Celebrity Package</div>
           <div class="pkg-price">8.000€</div>
           <div class="pkg-divider"></div>
@@ -2546,7 +2593,7 @@
             <li>Video iz kladionice</li>
           </ul>
         </div>
-        <div class="pricing-card pricing-card-volcano">
+        <div class="pricing-card featured">
           <div class="pkg-name">Volcano Package</div>
           <div class="pkg-price">12.000€</div>
           <div class="pkg-subtitle">mesečno · sve uključeno</div>
@@ -2609,7 +2656,7 @@
   }
 
   // Slides
-  const slideIds = ['s1','s2','s3','s4','s5','s6','s7','s8','s16','s10','s9','s14','s13','s17','s18','s20'];
+  const slideIds = ['s1','s2','s3','s4','s5','s6','s7','s8','s16','s10','s9','s11','s14','s13','s17','s18','s20'];
   const slides = slideIds.map(id => document.getElementById(id));
   let current = 0;
 
